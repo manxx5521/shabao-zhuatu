@@ -37,6 +37,15 @@
 			<version>2.6</version>
 		</dependency>
 		<!-- commons 功能包 end -->
+		
+		<!-- 通过注解简化getter和setter等方式 -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.20</version>
+			<scope>provided</scope>
+		</dependency>
+
 
 		<!-- 用来在java中访问http资源 -->
 		<dependency>

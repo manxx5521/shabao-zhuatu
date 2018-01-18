@@ -126,7 +126,8 @@ public class ZhuatuZolTest {
 				return null;
 			}
 		});
-		ZhuatuFactory.createDownloadZhuatu().start(indexUrl, zhuatuServices, "J:\\vm\\图片系列\\中关村在线", "gb2312");
+//		ZhuatuFactory.createDownloadZhuatu().start(indexUrl, zhuatuServices, "J:\\vm\\图片系列\\中关村在线", "gb2312");
+		ZhuatuFactory.createDownloadZhuatu().start(indexUrl, zhuatuServices, "E:\\vm\\test\\test\\fengniao", "gb2312");
 	}
 
 }
