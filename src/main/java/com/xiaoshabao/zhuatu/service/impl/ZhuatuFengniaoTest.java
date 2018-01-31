@@ -67,7 +67,8 @@ public class ZhuatuFengniaoTest {
 					}
 				}
 				log.info("找到想要的url，忽略下边的报错，进行下一任务。");
-				return null;// 找到想要的直接跳出，完成本任务
+				// 找到想要的直接跳出，完成本任务
+				return null;
 			}
 
 			@Override

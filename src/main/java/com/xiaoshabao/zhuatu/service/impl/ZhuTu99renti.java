@@ -33,7 +33,7 @@ public class ZhuTu99renti {
 	protected String urlRoot = "http://www.99renti.wang";
 	
 	/**封面图片 不下载*/
-	private String FM_JPG="slt.jpg";
+	private final static String FM_JPG="slt.jpg";
 
 	@Test
 	public void test() {
@@ -93,7 +93,7 @@ public class ZhuTu99renti {
 					ImageTag img = (ImageTag) node;
 					String src = img.getAttribute("src");
 					String alt = img.getAttribute("alt");
-					if (alt == null || src == null||src.endsWith(FM_JPG)||!alt.equals(pageInfo.getTitle())) {
+					if (alt == null || src == null||src.endsWith(ZhuTu99renti.FM_JPG)||!alt.equals(pageInfo.getTitle())) {
 						continue;
 					}
 					logger.info("取到下载链接：" + src);

@@ -110,7 +110,8 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 			return;
 		}
 		Iterator<TuInfo> iterator = list.iterator();
-		while (iterator.hasNext()) {// 链表用迭代器
+		// 链表用迭代器
+		while (iterator.hasNext()) {
 			TuInfo tuInfo = iterator.next();
 
 			// 扩展操作
@@ -119,7 +120,8 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 			}
 
 			if (zhuatuServices.size() > idx + 1) {
-				parserPageNextIdx(tuInfo, zhuatuServices.get(idx + 1), idx + 1);// 进行下一层任务
+				// 进行下一层任务
+				parserPageNextIdx(tuInfo, zhuatuServices.get(idx + 1), idx + 1);
 			}
 		}
 

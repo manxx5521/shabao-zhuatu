@@ -62,7 +62,7 @@ public class ZhuatuHttpManager {
 			Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
 					.register(HTTP, new PlainConnectionSocketFactory()).register(HTTPS, sslsf).build();
 			cm = new PoolingHttpClientConnectionManager(registry);
-			cm.setMaxTotal(200);// max connection
+			cm.setMaxTotal(200);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -140,15 +140,17 @@ public class ZhuatuHttpManager {
 	}
 
 	private void download(String url, String pathName) throws Exception {
-		HttpGet httpGet = new HttpGet(url);// 创建get请求
+		// 创建get请求
+		HttpGet httpGet = new HttpGet(url);
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
 		HttpEntity entity = null;
 		// 自定义超时时间等
 		RequestConfig requestConfig = RequestConfig.custom()
-
-				.setSocketTimeout(1000 * 60 * 15) // socket超时
-				.setConnectTimeout(50000) // connect超时
+				// socket超时
+				.setSocketTimeout(1000 * 60 * 15) 
+				// connect超时
+				.setConnectTimeout(50000) 
 				.build();
 		httpGet.setConfig(requestConfig);
 		this.setHearder(httpGet);
@@ -221,7 +223,8 @@ public class ZhuatuHttpManager {
 			// 执行请求
 			response = httpClient.execute(httpGet);
 			entity = response.getEntity();
-			responseContent = EntityUtils.toString(entity, charset);// 获得响应内容
+			// 获得响应内容
+			responseContent = EntityUtils.toString(entity, charset);
 		} finally {
 			if (response != null) {
 				response.close();
@@ -256,7 +259,8 @@ public class ZhuatuHttpManager {
 			// 执行请求
 			response = httpClient.execute(httpPost);
 			entity = response.getEntity();
-			result = EntityUtils.toString(entity, charset);// 获得响应内容
+			// 获得响应内容
+			result = EntityUtils.toString(entity, charset);
 		} finally {
 			try {
 				// 关闭连接,释放资源

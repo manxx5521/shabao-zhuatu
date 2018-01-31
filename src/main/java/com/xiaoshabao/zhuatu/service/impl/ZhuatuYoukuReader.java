@@ -14,7 +14,8 @@ import java.util.Map;
 public class ZhuatuYoukuReader {
 	private Map<String, ReadBean> data = new HashMap<String, ReadBean>();
 	private String path;
-	private String fileName;//不带扩展名的文件名，带路径
+	/*不带扩展名的文件名，带路径*/
+	private String fileName;
 
 	/**
 	 * E:\\test\\test

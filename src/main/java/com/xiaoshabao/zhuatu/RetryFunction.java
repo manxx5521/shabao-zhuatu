@@ -6,7 +6,9 @@ package com.xiaoshabao.zhuatu;
  * @param <R>
  */
 public interface RetryFunction<T, R> {
-	
+	/**
+	 * 具体操作
+	 */
 	R apply(T t) throws Exception;
 
 }
