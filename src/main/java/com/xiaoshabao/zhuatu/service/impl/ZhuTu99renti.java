@@ -30,7 +30,8 @@ public class ZhuTu99renti {
 
 	private final static Logger logger = LoggerFactory.getLogger(ZhuTu99renti.class);
 
-	protected String urlRoot = "http://www.99renti.wang";
+	protected String urlRoot = "http://www.ggrenti.org";
+//	protected String urlRoot = "http://www.99renti.wang";
 	
 	/**封面图片 不下载*/
 	private final static String FM_JPG="slt.jpg";
@@ -128,7 +129,8 @@ public class ZhuTu99renti {
 		});
 
 		// 装载抓图任务
-		ZhuatuFactory.createDownloadZhuatu().start("http://www.99renti.wang/html/guomosipai/", zhuatuServices,
+		ZhuatuFactory.createDownloadZhuatu().start("http://www.ggrenti.org/html/guomosipai/", zhuatuServices,
+//				ZhuatuFactory.createDownloadZhuatu().start("http://www.99renti.wang/html/guomosipai/", zhuatuServices,
 				"E:\\test\\shabao-m\\resources\\plugins\\mm\\99renti", "GBK");
 	}
 
