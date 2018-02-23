@@ -3,6 +3,8 @@ package com.xiaoshabao.zhuatu.http;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -105,7 +107,7 @@ public class ZhuatuHttpManager {
 	/**
 	 * 请求分发
 	 */
-	private String doHTTPAuto(String url, ZhuatuConfig config) throws ClientProtocolException, IOException {
+	private String doHTTPAuto(String url, ZhuatuConfig config) throws ClientProtocolException, Exception {
 		if (url.startsWith(ZhuatuHttpManager.HTTPS)) {
 			if (config.getMethod().equals(RequestMethod.GET)) {
 				return this.doGet(url, config.getCharset());
@@ -140,8 +142,12 @@ public class ZhuatuHttpManager {
 	}
 
 	private void download(String url, String pathName) throws Exception {
+		//创建url传入，可以解决部分编码问题
+		URL url1 = new URL(url);   
+        URI uri = new URI(url1.getProtocol(), url1.getHost(), url1.getPath(), url1.getQuery(), null);
 		// 创建get请求
-		HttpGet httpGet = new HttpGet(url);
+		HttpGet httpGet = new HttpGet(uri);
+//		HttpGet httpGet = new HttpGet(url);
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
 		HttpEntity entity = null;
@@ -208,7 +214,7 @@ public class ZhuatuHttpManager {
 	 * @throws IOException
 	 *             发送http get请求时资源未能正常关闭！！
 	 */
-	private String doGet(String url, String charset) throws ClientProtocolException, IOException {
+	private String doGet(String url, String charset) throws ClientProtocolException, Exception {
 		HttpGet httpGet = new HttpGet(url);
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse response = null;
@@ -225,6 +231,7 @@ public class ZhuatuHttpManager {
 			entity = response.getEntity();
 			// 获得响应内容
 			responseContent = EntityUtils.toString(entity, charset);
+//			ZhuatuUtil.writerHtml(responseContent);
 		} finally {
 			if (response != null) {
 				response.close();

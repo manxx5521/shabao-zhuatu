@@ -62,11 +62,11 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 
 		// 如果是项目服务，进行项目比对排重
 		if (service instanceof ProjectAble) {
-			if(projects.contains(ZhuatuUtil.parserTitleName(tuInfo.getTitle()))) {
+			if(projects.contains(ZhuatuUtil.formatTitleName(tuInfo.getTitle()))) {
 				log.warn("项目 {} 未下载（项目已经存在）。", tuInfo.getTitle());
 				return false;
 			}else {
-				log.warn("**开始下载项目 {}。(目录：{})***********", ZhuatuUtil.parserTitleName(tuInfo.getTitle()),config.getSavePath());
+				log.warn("**开始下载项目 {}。(目录：{})***********", ZhuatuUtil.formatTitleName(tuInfo.getTitle()),config.getSavePath());
 			}
 		}
 
@@ -86,7 +86,7 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 			
 			String downloadUrl=parserDowloadUrl(tuInfo.getUrl());
 			DownloadTuTask myTask = new DownloadTuTask(downloadUrl, config.getSavePath() + File.separator
-					+ZhuatuUtil.parserTitleName(tuInfo.getTitle()) + File.separator + ZhuatuUtil.parserTitleName(fileName));
+					+ZhuatuUtil.formatTitleName(tuInfo.getTitle()) + File.separator + ZhuatuUtil.formatTitleName(fileName));
 			ZhuatuDownloadPool.getInstance().execute(myTask);
 		}
 		return true;

@@ -11,6 +11,11 @@ public class ZhuatuConfig {
 	private String savePath;
 
 	private RequestMethod method = RequestMethod.GET;
+	/**
+	 * 是否直接请求url，返回内容到html变量默认true
+	 * @param reqHtml
+	 */
+	private boolean reqHtml=true;
 
 	/** 下载链接解析函数 */
 	private Function<String, String> downlaodUrlParser;
@@ -58,6 +63,14 @@ public class ZhuatuConfig {
 	public void setMethod(RequestMethod method) {
 		this.method = method;
 	}
+	/**
+	 * 是否直接请求url，返回内容到html变量默认true
+	 * @param reqHtml
+	 */
+	public void setReqHtml(boolean reqHtml) {
+		this.reqHtml = reqHtml;
+	}
+
 
 
 	public String getCharset() {
@@ -78,5 +91,13 @@ public class ZhuatuConfig {
 	public Function<String, String> getDownlaodUrlParser() {
 		return downlaodUrlParser;
 	}
+
+	/**
+	 * 是否直接请求url，返回内容到html变量默认true
+	 */
+	public boolean isReqHtml() {
+		return reqHtml;
+	}
+
 	
 }

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.ZhuatuUtil;
 import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
 import com.xiaoshabao.zhuatu.service.ZhuatuDownloadService;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
@@ -53,7 +54,7 @@ public class ZhuTu99renti {
 						if (tag instanceof LinkTag) {
 							LinkTag link = (LinkTag) tag;
 							String href = link.getLink();
-							String title = link.getAttribute("title");
+							String title = ZhuatuUtil.formatTitleName(link.getAttribute("title"));
 
 							TuInfo info = new TuInfo();
 							info.setUrl(urlRoot + href);
@@ -93,7 +94,7 @@ public class ZhuTu99renti {
 				for (Node node : imgs.toNodeArray()) {
 					ImageTag img = (ImageTag) node;
 					String src = img.getAttribute("src");
-					String alt = img.getAttribute("alt");
+					String alt = ZhuatuUtil.formatTitleName(img.getAttribute("alt"));
 					if (alt == null || src == null||src.endsWith(ZhuTu99renti.FM_JPG)||!alt.equals(pageInfo.getTitle())) {
 						continue;
 					}

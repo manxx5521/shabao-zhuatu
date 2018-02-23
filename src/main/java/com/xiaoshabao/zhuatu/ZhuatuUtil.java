@@ -7,11 +7,9 @@ import java.io.PrintWriter;
 
 public class ZhuatuUtil {
 	/**
-	 * 去除可能存在的特殊字符(目前只做等于配置使用)
-	 * 
-	 * @return
+	 * 去除可能存在的特殊字符
 	 */
-	public static String parserTitleName(String title) {
+	public static String formatTitleName(String title) {
 		title = title.replace("/", "");
 		title = title.replace("\\", "");
 		title = title.replace("|", "");
@@ -21,6 +19,34 @@ public class ZhuatuUtil {
 		title = title.replace("<", "");
 		title = title.replace(">", "");
 		title = title.replace("amp;", "");
+		
+		int size=title.length();
+		char re=' ';
+		int begin=0;
+		int end=size;
+		//去除开头的空格
+		for(int i=0;i<size;i++){
+			if(re!=title.charAt(i)){
+				begin=i;
+				break;
+			}
+		}
+		//去除尾部空格
+		for(int i=size-1;i>=0;i--){
+			if(re!=title.charAt(i)){
+				end=i;
+				break;
+			}
+		}
+		title=title.substring(begin, end+1);
+		return title;
+	}
+	/**
+	 * 去除可能存在的特殊字符
+	 */
+	public static String formatUrl(String title) {
+		title=title.replace("\r","");
+		title=title.replace("\n","");
 		return title;
 	}
 
@@ -37,4 +63,5 @@ public class ZhuatuUtil {
 			e.printStackTrace();
 		}
 	}
+	
 }

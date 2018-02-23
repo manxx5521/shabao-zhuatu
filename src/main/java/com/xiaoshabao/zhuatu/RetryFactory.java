@@ -55,12 +55,12 @@ public class RetryFactory<T, R> {
 		Exception laste = null;
 		do {
 			if (i > count) {
-				if(result==null) {
-					log.error("{}执行失败,原因：函数中返回结果为null", this.detailMsg);
+				if(laste!=null) {
+					log.error("{}执行失败,出现异常。", this.detailMsg, laste);
+					
 				}else {
-					log.error("{}执行失败", this.detailMsg, laste);
+					log.error("{}执行失败,原因：函数中返回结果为null", this.detailMsg);
 				}
-				
 				return null;
 			}
 			try {
@@ -71,7 +71,7 @@ public class RetryFactory<T, R> {
 					return result;
 				}
 			} catch (Exception e) {
-				log.warn("{}未能执行成功，进行重试。开始重试第{}次", this.detailMsg, i);
+				log.warn("{} 执行失败，进行重试。开始重试第{}次", this.detailMsg, i);
 				if(e instanceof SocketException){
 					log.warn("错误原因：SocketException->Connection reset。");
 				}else if(e instanceof SocketTimeoutException){

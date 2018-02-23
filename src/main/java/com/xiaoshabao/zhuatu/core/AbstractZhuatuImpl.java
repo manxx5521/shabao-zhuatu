@@ -90,14 +90,15 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 		ZhuatuService zhuatuService = this.zhuatuServices.get(idx);
 
 		String html = null;
-		// if (zhuatuService instanceof HttpServiceAble) {
-		// 访问url
-		html = ZhuatuHttpManager.getInstance().doHTTPAuto5(pageInfo.getUrl(), config);
-		// 访问失败跳出
-		if (html == null) {
-			return;
+		if (config.isReqHtml()) {
+			// 访问url
+			html = ZhuatuHttpManager.getInstance().doHTTPAuto5(
+					pageInfo.getUrl(), config);
+			// 访问失败跳出
+			if (html == null) {
+				return;
+			}
 		}
-		// }
 
 		List<TuInfo> list = null;
 		try {
