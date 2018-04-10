@@ -62,12 +62,27 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 
 		// 如果是项目服务，进行项目比对排重
 		if (service instanceof ProjectAble) {
-			if(projects.contains(ZhuatuUtil.formatTitleName(tuInfo.getTitle()))) {
+			if (projects.contains(ZhuatuUtil.formatTitleName(tuInfo.getTitle()))) {
 				log.warn("项目 {} 未下载（项目已经存在）。", tuInfo.getTitle());
 				return false;
-			}else {
-				log.warn("**开始下载项目 {}。(目录：{})***********", ZhuatuUtil.formatTitleName(tuInfo.getTitle()),config.getSavePath());
 			}
+			// 如果有优先项目，先执行优先项目，其他跳过
+			if (config.getFirstProject().size() > 0) {
+				//是优先项目标志
+				boolean flag=false;
+				for(String title:config.getFirstProject()){
+					if(tuInfo.getTitle().contains(title)){
+						flag=true;
+						break;
+					}
+				}
+				//不是优先项目就跳过
+				if(!flag){
+					return false;
+				}
+			}
+
+			log.warn("**开始下载项目 {}。(目录：{})***********",ZhuatuUtil.formatTitleName(tuInfo.getTitle()),config.getSavePath());
 		}
 
 		// 需要等待相同内容连接池
@@ -79,14 +94,15 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 		// 如果是需要下载的url
 		if (service instanceof ZhuatuDownloadAble) {
 			String fileNameUrl = tuInfo.getUrl();
-			if (fileNameUrl.contains("?")) {
+			log.info("装载下载链接：" + fileNameUrl);
+			if (fileNameUrl.contains("?")&&fileNameUrl.lastIndexOf("/")<fileNameUrl.lastIndexOf("?")) {
 				fileNameUrl = fileNameUrl.substring(0, fileNameUrl.indexOf("?"));
 			}
 			String fileName = fileNameUrl.substring(fileNameUrl.lastIndexOf("/") + 1, fileNameUrl.length());
 			
 			String downloadUrl=parserDowloadUrl(tuInfo.getUrl());
 			DownloadTuTask myTask = new DownloadTuTask(downloadUrl, config.getSavePath() + File.separator
-					+ZhuatuUtil.formatTitleName(tuInfo.getTitle()) + File.separator + ZhuatuUtil.formatTitleName(fileName));
+					+ZhuatuUtil.formatTitleName(tuInfo.getTitle()) + File.separator + ZhuatuUtil.formatTitleName(fileName),config.getDwonloadType());
 			ZhuatuDownloadPool.getInstance().execute(myTask);
 		}
 		return true;

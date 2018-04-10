@@ -1,6 +1,10 @@
 package com.xiaoshabao.zhuatu;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
+
+import com.xiaoshabao.zhuatu.http.HttpType;
 
 public class ZhuatuConfig {
 
@@ -20,6 +24,19 @@ public class ZhuatuConfig {
 	/** 下载链接解析函数 */
 	private Function<String, String> downlaodUrlParser;
 	
+	/**
+	 * 不下载的url前缀
+	 */
+	private Set<String> noUrl=new HashSet<String>();
+	/**
+	 * 优先下载的项目
+	 */
+	private Set<String> firstProject=new HashSet<String>();
+	
+	/**
+	 * 下载方式
+	 */
+	private HttpType dwonloadType=HttpType.OKHTTP;
 
 	/**
 	 * 下载链接解析函数
@@ -99,5 +116,71 @@ public class ZhuatuConfig {
 		return reqHtml;
 	}
 
+
+	/**
+	 * 获得不需要下载的url前缀比如 http://www.baidu.com/
+	 * @return
+	 */
+	public Set<String> getNoUrl() {
+		return noUrl;
+	}
+	/**
+	 * 添加不需要下载的url前缀比如 http://www.baidu.com/
+	 * @return
+	 */
+	public ZhuatuConfig addNoUrl(String url){
+		noUrl.add(url);
+		return this;
+	}
+	/**
+	 * 添加不需要下载的url前缀比如 http://www.baidu.com/
+	 * @return
+	 */
+	public ZhuatuConfig addNoUrl(String...url){
+		for(String u:url){
+			noUrl.add(u);
+		}
+		return this;
+	}
+
+	/**
+	 * 优先下载的项目
+	 * @return
+	 */
+	public Set<String> getFirstProject() {
+		return firstProject;
+	}
+	/**
+	 * 优先下载的项目
+	 */
+	public ZhuatuConfig addFirstProject(String title){
+		firstProject.add(title);
+		return this;
+	}
+	/**
+	 * 优先下载的项目
+	 */
+	public ZhuatuConfig addFirstProject(String...titles){
+		for(String title:titles){
+			firstProject.add(title);
+		}
+		return this;
+	}
+
+	/**
+	 * 下载方式
+	 * @return
+	 */
+	public HttpType getDwonloadType() {
+		return dwonloadType;
+	}
+
+	/**
+	 * 下载方式
+	 * @param dwonloadType
+	 */
+	public void setDwonloadType(HttpType dwonloadType) {
+		this.dwonloadType = dwonloadType;
+	}
 	
 }

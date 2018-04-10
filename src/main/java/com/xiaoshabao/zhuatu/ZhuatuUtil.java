@@ -38,7 +38,12 @@ public class ZhuatuUtil {
 				break;
 			}
 		}
-		title=title.substring(begin, end+1);
+		try {
+			title=title.substring(begin, end+1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return title;
 	}
 	/**

@@ -37,7 +37,7 @@
 			<version>2.6</version>
 		</dependency>
 		<!-- commons 功能包 end -->
-		
+
 		<!-- 通过注解简化getter和setter等方式 -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -53,6 +53,12 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>3.10.0</version>
+		</dependency>
+
 		<dependency>
 			<!-- 用于httpclient请求url时 上传文件支持 -->
 			<groupId>org.apache.httpcomponents</groupId>

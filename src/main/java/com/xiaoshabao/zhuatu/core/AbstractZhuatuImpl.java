@@ -112,12 +112,21 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 		}
 		Iterator<TuInfo> iterator = list.iterator();
 		// 链表用迭代器
+		ma:
 		while (iterator.hasNext()) {
 			TuInfo tuInfo = iterator.next();
-
+			
+			//如果时不需要访问的域名前缀
+			for(String start:this.config.getNoUrl()){
+				if(tuInfo.getUrl().startsWith(start)){
+					log.info("链接在noUrl中无需访问。url->{}",tuInfo.getUrl());
+					continue ma;
+				}
+			}
+			
 			// 扩展操作
 			if (!exeCurrPageProjet(zhuatuService, tuInfo)) {
-				continue;
+				continue ma;
 			}
 
 			if (zhuatuServices.size() > idx + 1) {
