@@ -12,13 +12,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.gargoylesoftware.htmlunit.html.HtmlImage;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.RetryFactory;
+import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
 import com.xiaoshabao.zhuatu.http.ZhuatuHttpUnitManager;
@@ -31,7 +29,7 @@ import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
  */
 public class ZhuatuZolTest {
 
-	private final static Logger log = LoggerFactory.getLogger(ZhuatuZolTest.class);
+//	private final static Logger log = LoggerFactory.getLogger(ZhuatuZolTest.class);
 
 	// private String indexUrl = "http://bbs.zol.com.cn/dcbbs/d14_pic.html#c";
 	private String indexUrl = "http://bbs.zol.com.cn/dcbbs/d16_pic.html#c";
@@ -79,6 +77,11 @@ public class ZhuatuZolTest {
 		});
 		// 第二层解析具体照片
 		zhuatuServices.add(new ZhuatuDownloadService() {
+			//当前解析方法不直接http请求
+			@Override
+			public boolean isReqHtml() {
+				return false;
+			}
 
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws Exception {
@@ -96,7 +99,6 @@ public class ZhuatuZolTest {
 					TuInfo info = retry.execute(page1 -> {
 						HtmlImage img = (HtmlImage) page.getElementById("bigPicHome");
 						String href = img.getSrcAttribute();
-						log.info("111--{}", href);
 						if (!sets.add(href)) {
 							// 跳出重试
 							return null;
@@ -110,7 +112,6 @@ public class ZhuatuZolTest {
 					});
 
 					result.add(info);
-					log.info("取到下载链接:{}", info.getUrl());
 
 					// 不是最后一次点击下一页
 					if (i < links.size() - 1) {

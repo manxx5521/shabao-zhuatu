@@ -16,7 +16,7 @@ public class ZhuatuConfig {
 
 	private RequestMethod method = RequestMethod.GET;
 	/**
-	 * 是否直接请求url，返回内容到html变量默认true
+	 * 是否直接请求url，返回内容到html变量默认true（对于服务所有请求）
 	 * @param reqHtml
 	 */
 	private boolean reqHtml=true;

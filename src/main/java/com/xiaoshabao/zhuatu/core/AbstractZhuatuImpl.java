@@ -90,7 +90,7 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 		ZhuatuService zhuatuService = this.zhuatuServices.get(idx);
 
 		String html = null;
-		if (config.isReqHtml()) {
+		if (config.isReqHtml()&&zhuatuService.isReqHtml()) {
 			// 访问url
 			html = ZhuatuHttpManager.getInstance().doHTTPAuto5(
 					pageInfo.getUrl(), config);

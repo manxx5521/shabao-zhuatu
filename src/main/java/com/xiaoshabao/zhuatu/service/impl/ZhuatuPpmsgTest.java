@@ -14,8 +14,6 @@ import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
@@ -26,8 +24,6 @@ import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
 
 public class ZhuatuPpmsgTest {
-
-	private final static Logger log = LoggerFactory.getLogger(ZhuatuPpmsgTest.class);
 
 	protected String urlRoot = "http://www.ppmsg.net/jiepaimeinv/";
 	
@@ -107,7 +103,6 @@ public class ZhuatuPpmsgTest {
 						String src = ZhuatuUtil.formatUrl(img.getAttribute("src"));
 						
 						String alt = ZhuatuUtil.formatTitleName(img.getAttribute("alt"));
-						log.info("取到下载链接：" + src);
 						TuInfo info = new TuInfo();
 						info.setUrl(src);
 						info.setTitle(alt);
