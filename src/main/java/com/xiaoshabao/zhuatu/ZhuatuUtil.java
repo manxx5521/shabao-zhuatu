@@ -10,6 +10,9 @@ public class ZhuatuUtil {
 	 * 去除可能存在的特殊字符
 	 */
 	public static String formatTitleName(String title) {
+		if(title==null||title.length()==0){
+			return title;
+		}
 		title = title.replace("/", "");
 		title = title.replace("\\", "");
 		title = title.replace("|", "");
@@ -19,6 +22,7 @@ public class ZhuatuUtil {
 		title = title.replace("<", "");
 		title = title.replace(">", "");
 		title = title.replace("amp;", "");
+		title = title.replace("\"", "");
 		
 		int size=title.length();
 		char re=' ';
@@ -42,6 +46,11 @@ public class ZhuatuUtil {
 			title=title.substring(begin, end+1);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		
+		//去除尾部.
+		if(title.endsWith(".")){
+			title=title.substring(0, title.length()-1);
 		}
 		
 		return title;

@@ -59,7 +59,6 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 	 */
 	@Override
 	protected boolean exeCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
-
 		// 如果是项目服务，进行项目比对排重
 		if (service instanceof ProjectAble) {
 			if (projects.contains(ZhuatuUtil.formatTitleName(tuInfo.getTitle()))) {

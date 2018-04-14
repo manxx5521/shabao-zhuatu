@@ -110,14 +110,21 @@ public class Zhuatu1024Test {
 		config.setCharset("gbk");
 		config.setSavePath("E:\\test\\shabao-m\\resources\\plugins\\mm\\1024");
 		
-		config.addNoUrl("http://www.s7tu.com");
+		config.addNoUrl("https://s19.postimg.org");
+		config.addNoUrl("https://s20.postimg.org");//https://s20.postimg.org/s7cdqfyel/image.jpg
+		config.addNoUrl("http://s7tu.com/","http://www.s7tu.com");//http://s7tu.com/images/2018/01/18/DSC021425cfc7.jpg
+		config.addNoUrl("https://xxx.freeimage.us");//https://xxx.freeimage.us/image.php?id=FECF_5A5812CE&jpg
+//		config.addNoUrl("http://120.52.72.23");//http://120.52.72.23/c.pic303.com/images/2017/12/05/DSC_2021672a9a56848ff21c.jpg
+		
+		
 		config.addNoUrl("https://s25.postimg.org");//访问慢
+		config.addNoUrl("http://www.sxeimg.com");//访问慢
 		
 		//优先下载
 		config.addFirstProject("兔妈妈","贱宝","海南小骚","玲玲的鸡巴","太乙归来","美腿娇妻");
 		config.addFirstProject("球王酥酥原创","小炮哥","蜜丝原创","啪照工作室","吾家骚妻","嫩穴媳妇","球王酥酥","软萌小仙女","娇妻美美","甜甜","旧叙系列","花颜");
 		config.addFirstProject("上官大人","樱玉花子","花花","济南活动","璐璐","辣妈辣嘛","老司机集结号","西安的太阳","海南小骚逼","美美");
-		config.addFirstProject("模特第","骚婷婷","闲愁出品","一纳疯骚");
+		config.addFirstProject("模特第","骚婷婷","闲愁出品","一纳疯骚","月儿吖吖","Tumblr","快乐18出品","浪子原创","骚妻养成计划","美腿娇妻","感恩草榴","单纯小婷婷");
 		config.addFirstProject("露出","SM","公园","野外");
 		
 		ZhuatuFactory.createDownloadZhuatu().start(
