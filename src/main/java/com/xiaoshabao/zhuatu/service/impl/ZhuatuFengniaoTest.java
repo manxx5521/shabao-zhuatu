@@ -27,9 +27,7 @@ import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
 
 public class ZhuatuFengniaoTest {
-
-	
-	private final static Logger log = LoggerFactory.getLogger(ZhuatuFengniaoTest.class);
+	private final static Logger log = LoggerFactory.getLogger(ZhuatuFengniaoTest.class);	
 	//专辑精选
 //	private String indexUrl = "http://tu.fengniao.com/album/";
 //	private String nextUrl = "http://tu.fengniao.com/data/loadAlbum.php";

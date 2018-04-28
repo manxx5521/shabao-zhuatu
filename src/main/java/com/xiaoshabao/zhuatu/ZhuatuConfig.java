@@ -37,6 +37,10 @@ public class ZhuatuConfig {
 	 * 下载方式
 	 */
 	private HttpType dwonloadType=HttpType.OKHTTP;
+	/**
+	 * 获得基本url 比如：http://tu.fengniao.com
+	 */
+	private String webRoot;
 
 	/**
 	 * 下载链接解析函数
@@ -181,6 +185,27 @@ public class ZhuatuConfig {
 	 */
 	public void setDwonloadType(HttpType dwonloadType) {
 		this.dwonloadType = dwonloadType;
+	}
+
+
+	/**
+	 * 获得基本url 比如：http://tu.fengniao.com
+	 * @return
+	 */
+	public String getWebRoot() {
+		return webRoot;
+	}
+	/**
+	 * 获得基本url 比如：http://tu.fengniao.com/
+	 * @return
+	 */
+	public String getWebRootAll() {
+		return webRoot+"/";
+	}
+
+
+	public void setWebRoot(String webRoot) {
+		this.webRoot = webRoot;
 	}
 	
 }

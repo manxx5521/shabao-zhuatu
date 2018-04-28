@@ -25,14 +25,14 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 
 	@Override
 	final public void start(String url, List<ZhuatuService> zhuatuServices) {
-		this.start(url, zhuatuServices, new ZhuatuConfig());
+		this.init(url, zhuatuServices, new ZhuatuConfig());
 	}
 
 	@Override
 	final public void start(String url, List<ZhuatuService> zhuatuServices, String savePath) {
 		ZhuatuConfig config = new ZhuatuConfig();
 		config.setSavePath(savePath);
-		this.start(url, zhuatuServices, config);
+		this.init(url, zhuatuServices, config);
 	}
 
 	@Override
@@ -40,11 +40,21 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 		ZhuatuConfig config = new ZhuatuConfig();
 		config.setSavePath(savePath);
 		config.setCharset(charset);
-		this.start(url, zhuatuServices, config);
+		this.init(url, zhuatuServices, config);
 	}
 
 	@Override
 	public void start(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
+		init(url, zhuatuServices, config);
+	}
+	
+	/**
+	 * 初始化方法
+	 * @param url
+	 * @param zhuatuServices
+	 * @param config
+	 */
+	protected void init(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
 		log.info("开始抓取：{}", url);
 		try {
 			if (StringUtils.isEmpty(url) || zhuatuServices == null || zhuatuServices.size() < 1) {
@@ -58,6 +68,9 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 			for (ZhuatuService service : zhuatuServices) {
 				initBeforSerivce(service);
 			}
+			
+			String host=new  java.net.URL(url).getHost();
+			config.setWebRoot(url.substring(0,url.lastIndexOf(host))+host+"/");
 
 			TuInfo info = new TuInfo();
 			info.setUrl(url);

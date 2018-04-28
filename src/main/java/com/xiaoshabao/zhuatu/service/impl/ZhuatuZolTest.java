@@ -33,7 +33,6 @@ public class ZhuatuZolTest {
 
 	// private String indexUrl = "http://bbs.zol.com.cn/dcbbs/d14_pic.html#c";
 	private String indexUrl = "http://bbs.zol.com.cn/dcbbs/d16_pic.html#c";
-	private String urlRoot = "http://bbs.zol.com.cn";
 
 	@Test
 	public void test() {
@@ -55,7 +54,7 @@ public class ZhuatuZolTest {
 						String href = link.attr("href");
 						String title = link.text();
 						TuInfo info = new TuInfo();
-						info.setUrl(urlRoot + href);
+						info.setUrl(config.getWebRoot() + href);
 						info.setTitle(title);
 						result.add(info);
 					}
@@ -70,7 +69,7 @@ public class ZhuatuZolTest {
 				if (links.size() > 0) {
 					Element link = links.get(0);
 					String href = link.attr("href");
-					return urlRoot + href;
+					return config.getWebRoot() + href;
 				}
 				return null;
 			}

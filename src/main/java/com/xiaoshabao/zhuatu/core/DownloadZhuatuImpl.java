@@ -40,7 +40,7 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 			}
 			File path = new File(config.getSavePath());
 			if (!path.exists() || path.isFile()) {
-				path.mkdir();
+				path.mkdirs();
 			}
 			for (File file : path.listFiles()) {
 				if (file.isDirectory()) {
