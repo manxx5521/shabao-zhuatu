@@ -57,7 +57,7 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 				return;
 			} else {
 				try {
-					Thread.sleep(1000 * 2);
+					Thread.sleep(1000 * 1);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

@@ -58,10 +58,28 @@ public class ZhuatuUtil {
 	/**
 	 * 去除可能存在的特殊字符
 	 */
-	public static String formatUrl(String title) {
-		title=title.replace("\r","");
-		title=title.replace("\n","");
-		return title;
+	public static String formatUrl(String url) {
+		url=url.replace("\r","");
+		url=url.replace("\n","");
+		return url;
+	}
+	
+	/**
+	 * 格式话url
+	 * @param url 
+	 * @param webRoot 网站root路径：http://tu.fengniao.com
+	 * @return 返回完整路径 http://tu.fengniao.com/1111
+	 */
+	public static String formatUrl(String url,String webRoot) {
+		formatUrl(url);
+		if(!url.startsWith("http")){
+			if(url.startsWith("/")){
+				url=url.substring(1,url.length());
+			}
+			url=webRoot+url;
+		}
+		
+		return url;
 	}
 
 	/**

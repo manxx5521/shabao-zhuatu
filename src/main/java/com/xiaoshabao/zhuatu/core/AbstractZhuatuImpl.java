@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuAble;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.ZhuatuUtil;
 import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 
@@ -106,7 +107,7 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 		if (config.isReqHtml()&&zhuatuService.isReqHtml()) {
 			// 访问url
 			html = ZhuatuHttpManager.getInstance().doHTTPAuto5(
-					pageInfo.getUrl(), config);
+					ZhuatuUtil.formatUrl(pageInfo.getUrl(),config.getWebRoot()), config);
 			// 访问失败跳出
 			if (html == null) {
 				return;
@@ -119,33 +120,33 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 		} catch (Exception e) {
 			log.error("解析错误", e);
 		}
-		if (list == null || list.size() < 1) {
-			log.error("url解析内容 未能正常返回直接跳过  url->{}", pageInfo.getUrl());
-			return;
-		}
-		Iterator<TuInfo> iterator = list.iterator();
-		// 链表用迭代器
-		ma:
-		while (iterator.hasNext()) {
-			TuInfo tuInfo = iterator.next();
-			
-			//如果时不需要访问的域名前缀
-			for(String start:this.config.getNoUrl()){
-				if(tuInfo.getUrl().startsWith(start)){
-					log.info("链接在noUrl中无需访问。url->{}",tuInfo.getUrl());
+		if(list!=null&&list.size() > 1){
+			Iterator<TuInfo> iterator = list.iterator();
+			// 链表用迭代器
+			ma:
+			while (iterator.hasNext()) {
+				TuInfo tuInfo = iterator.next();
+				
+				//如果时不需要访问的域名前缀
+				for(String start:this.config.getNoUrl()){
+					if(tuInfo.getUrl().startsWith(start)){
+						log.info("链接在noUrl中无需访问。url->{}",tuInfo.getUrl());
+						continue ma;
+					}
+				}
+				
+				// 扩展操作
+				if (!exeCurrPageProjet(zhuatuService, tuInfo)) {
 					continue ma;
 				}
-			}
-			
-			// 扩展操作
-			if (!exeCurrPageProjet(zhuatuService, tuInfo)) {
-				continue ma;
-			}
 
-			if (zhuatuServices.size() > idx + 1) {
-				// 进行下一层任务
-				parserPageNextIdx(tuInfo, zhuatuServices.get(idx + 1), idx + 1);
+				if (zhuatuServices.size() > idx + 1) {
+					// 进行下一层任务
+					parserPageNextIdx(tuInfo, zhuatuServices.get(idx + 1), idx + 1);
+				}
 			}
+		}else{
+			log.error("url解析内容 未能正常返回直接跳过,进行下一页  url->{}", pageInfo.getUrl());
 		}
 
 		String nextUrl = null;

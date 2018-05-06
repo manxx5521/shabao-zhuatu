@@ -115,18 +115,28 @@ public class Zhuatu1024Test {
 		config.addNoUrl("http://s7tu.com/","http://www.s7tu.com");//http://s7tu.com/images/2018/01/18/DSC021425cfc7.jpg
 		config.addNoUrl("https://xxx.freeimage.us");//https://xxx.freeimage.us/image.php?id=FECF_5A5812CE&jpg
 //		config.addNoUrl("http://120.52.72.23");//http://120.52.72.23/c.pic303.com/images/2017/12/05/DSC_2021672a9a56848ff21c.jpg
-		
+		config.addNoUrl("https://s18.postimg.org");//https://s18.postimg.org/gkemehp61/IMG_5813.jpg
+		config.addNoUrl("https://s8.postimg.org");//https://s8.postimg.org/vz5r1e3d1/IMG_5708.jpg
+		config.addNoUrl("https://s26.postimg.org");//https://s26.postimg.org/vy8gxl421/IMG_1486.jpg
+		config.addNoUrl("https://s1.areyoucereal.com/");//https://s1.areyoucereal.com/xedoR.png
+		config.addNoUrl("http://ipoock.com");//http://ipoock.com/img/g1/20160904124106xp354.jpeg
+		config.addNoUrl("https://66.media.tumblr.com/");//https://66.media.tumblr.com/91f270ab0ae9f8f6d7a5f693b8a0beb6/tumblr_ocpvsdWPDa1u1izgro10_1280.jpg
+		config.addNoUrl("https://65.media.tumblr.com/");
+		config.addNoUrl("https://67.media.tumblr.com/");
+		config.addNoUrl("http://www.99kuma.com");//http://www.99kuma.com/1024AAsadfs34qw123qre/001/06.jpg
 		
 		config.addNoUrl("https://s25.postimg.org");//访问慢
 		config.addNoUrl("http://www.sxeimg.com");//访问慢
 		
 		//优先下载
+		/*
 		config.addFirstProject("兔妈妈","贱宝","海南小骚","玲玲的鸡巴","太乙归来","美腿娇妻");
 		config.addFirstProject("球王酥酥原创","小炮哥","蜜丝原创","啪照工作室","吾家骚妻","嫩穴媳妇","球王酥酥","软萌小仙女","娇妻美美","甜甜","旧叙系列","花颜");
 		config.addFirstProject("上官大人","樱玉花子","花花","济南活动","璐璐","辣妈辣嘛","老司机集结号","西安的太阳","海南小骚逼","美美");
 		config.addFirstProject("模特第","骚婷婷","闲愁出品","一纳疯骚","月儿吖吖","Tumblr","快乐18出品","浪子原创","骚妻养成计划","美腿娇妻","感恩草榴","单纯小婷婷");
+		config.addFirstProject("疯骚贱客","魅蓝师傅","母畜多多","抽象孙先生","约神猎物","森系女神","小母狗","菀晴","南阳凡哥","包子铺","真空少女","楚榴香","12316757","缘分","萌娃M","骚妻情趣睡衣诱惑","人造白虎少妇情人");
 		config.addFirstProject("露出","SM","公园","野外");
-		
+		*/
 		ZhuatuFactory.createDownloadZhuatu().start(
 				url, zhuatuServices,config);
 	}

@@ -1,5 +1,6 @@
 package com.xiaoshabao.zhuatu.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,27 +29,26 @@ import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
-import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
 
-public class ZhuatuYouku {
+public class YoukuRenameTest {
 
-	private final static Logger logger = LoggerFactory
-			.getLogger(ZhuatuYouku.class);
+	private final static Logger log = LoggerFactory
+			.getLogger(YoukuRenameTest.class);
 	
 	private static DateFormat ddFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	private String defaultCharset = "UTF-8";
 	
-	private List<Project> projectList=new LinkedList<ZhuatuYouku.Project>();
+	private Map<String,Video> videos=new HashMap<String, YoukuRenameTest.Video>(50);
+	
+	private List<Project> projectList=new LinkedList<YoukuRenameTest.Project>();
 	protected ZhuatuYoukuReader reader;
 	@Test
 	public void test(){
 		projectList.add(new Project("舞灵美娜子", "http://i.youku.com/i/UMTMyNDY4OTE5Ng==/videos?spm=a2hzp.8253869.0.0&order=1&page=1&last_item=&last_pn=10&last_vid=181292039",
 				"J:\\vm\\热舞多组\\舞灵美娜子\\temp", ""));
 		
-		reader=new ZhuatuYoukuReader("E:\\test\\test\\youkulog");
 		for(Project project :projectList){
-			reader.load(project.getTitle());
 			this.start(project);
 		}
 	}
@@ -58,9 +58,26 @@ public class ZhuatuYouku {
 	
 	public void start(Project project) {
 		
+		File pathFile=new File(project.getDownloadPath());
+		for(File file:pathFile.listFiles()){
+			Video video=new Video();
+			String realName=file.getName();
+			video.realName=realName;
+			String name=file.getName().replace("_", " ");
+			video.title=name;
+			
+			if(name.startsWith("秀舞时代 ")){
+				name=name.replace("秀舞时代 ", "");
+			}
+			video.toName=name;
+			video.basePath=project.getDownloadPath();
+			video.ProjectName=project.getTitle();
+			videos.put(video.title, video);
+		}
+		
 		List<ZhuatuService> zhuatuServices = new ArrayList<ZhuatuService>();
 		// 第一层解析分项的信息，找打具体的项目
-		zhuatuServices.add(new ZhuatuWaitService() {
+		zhuatuServices.add(new ZhuatuService() {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) {
 				final List<TuInfo> result = new LinkedList<TuInfo>();
@@ -71,29 +88,33 @@ public class ZhuatuYouku {
 
 					for (Node node : list.toNodeArray()) {
 						if (node instanceof Div) {
-							Map<String,String> rs=new HashMap<String, String>();
+							Video temp=new Video();
 							
 							node.accept(new NodeVisitor() {
 								@Override
 								public void visitTag(Tag tag) {
 									if (tag instanceof LinkTag) {
 										LinkTag link = (LinkTag) tag;
-										rs.put("title", link.getAttribute("title")) ;
+										temp.title=link.getAttribute("title") ;
 									}
 									if (tag instanceof Span) {
 										Span span = (Span) tag;
 										if("v-publishtime".equals(span.getAttribute("class"))){
-											rs.put("date", span.getStringText()) ;
+											temp.date=parserDate(span.getStringText());
 										}
 									}
 								}
 							});
-							reader.put(rs.get("title"), parserDate(rs.get("date")));
+							Video video=videos.get(temp.title);
+							if(video!=null){
+								video.date=temp.date;
+								reName(video);
+							}
 						}
 
 					}
 				} catch (Exception e) {
-					logger.error("解析出错{}", pageInfo.getUrl(), e);
+					log.error("解析出错{}", pageInfo.getUrl(), e);
 				}
 				return result;
 			}
@@ -117,7 +138,7 @@ public class ZhuatuYouku {
 
 					}
 				} catch (Exception e) {
-					logger.error("下一页 解析出错{}", e);
+					log.error("下一页 解析出错{}", e);
 				}
 				return null;
 			}
@@ -125,17 +146,15 @@ public class ZhuatuYouku {
 		});
 		
 		// 装载抓图任务
-		ZhuatuFactory.createDownloadZhuatu().start(project.getUrl(), zhuatuServices,
+		ZhuatuFactory.createHeavyZhuatu().start(project.getUrl(), zhuatuServices,
 						null, defaultCharset);
-//		BaseMZhuatu zhuatu = new MZhuatuToHeavy();
-//		zhuatu.start(project.getUrl(),null,
-//				defaultCharset, zhuatuServices);
 	}
 	
 	public String parserDate(String str){
 		String rs=null;
+		Date now=new Date();
 		Calendar c = Calendar.getInstance(); 
-		c.setTime(new Date()); 
+		c.setTime(now); 
 		int day=c.get(Calendar.DATE); 
 		int year=c.get(Calendar.YEAR);
 		try {
@@ -161,15 +180,26 @@ public class ZhuatuYouku {
 				if(str.matches("\\d{4}-\\d{2}-\\d{2}")){
 					c.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(str));
 				}else{
-					c.setTime(new SimpleDateFormat("MM-dd kk:mm:ss").parse(str));
+					c.setTime(new SimpleDateFormat("MM-dd kk:mm").parse(str));
 					c.set(Calendar.YEAR, year);
+					if(c.getTime().after(now)){
+						c.set(Calendar.YEAR, year-1);
+					}
 				}
 			}
 			rs=ddFormat.format(c.getTime());
 		} catch (Exception e) {
-			logger.error("日期解析失败{}",str,e);
+			log.error("日期解析失败{}",str,e);
 		}
 		return rs;
+	}
+	
+	/**重命名*/
+	public void reName(Video video){
+		File file=new File(video.basePath+File.separator+video.realName);
+		String toName="["+video.ProjectName+"]"+" "+video.date+" "+video.toName;
+		file.renameTo(new File(video.basePath+File.separator+toName));
+		log.info("==重命名到=>{}",toName);
 	}
 
 	
@@ -210,6 +240,22 @@ public class ZhuatuYouku {
 		public void setLogpath(String logpath) {
 			this.logpath = logpath;
 		}
+	}
+	
+	class Video{
+		/**目录真是名字*/
+		public String realName;
+		/**页面标题*/
+		public String title;
+		/**重命名到的名字*/
+		public String toName;
+		/**时间字符串*/
+		public String date;
+		/**根目录*/
+		public String basePath;
+		/**项目名字*/
+		public String ProjectName;
+		
 	}
 	
 	
