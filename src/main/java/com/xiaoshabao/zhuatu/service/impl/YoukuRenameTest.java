@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.Tag;
@@ -35,17 +36,17 @@ public class YoukuRenameTest {
 	private final static Logger log = LoggerFactory
 			.getLogger(YoukuRenameTest.class);
 	
-	private static DateFormat ddFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static DateFormat ddFormat = new SimpleDateFormat("yyyy.MM.dd");
 
 	private String defaultCharset = "UTF-8";
 	
-	private Map<String,Video> videos=new HashMap<String, YoukuRenameTest.Video>(50);
+	private Map<String,List<Video>> videos=new HashMap<String, List<Video>>(50);
 	
 	private List<Project> projectList=new LinkedList<YoukuRenameTest.Project>();
 	protected ZhuatuYoukuReader reader;
 	@Test
 	public void test(){
-		projectList.add(new Project("舞灵美娜子", "http://i.youku.com/i/UMTMyNDY4OTE5Ng==/videos?spm=a2hzp.8253869.0.0&order=1&page=1&last_item=&last_pn=10&last_vid=181292039",
+		projectList.add(new Project("舞灵美娜子", "http://i.youku.com/i/UMTMyNDY4OTE5Ng==/videos?spm=a2hzp.8253869.0.0",
 				"J:\\vm\\热舞多组\\舞灵美娜子\\temp", ""));
 		
 		for(Project project :projectList){
@@ -72,7 +73,12 @@ public class YoukuRenameTest {
 			video.toName=name;
 			video.basePath=project.getDownloadPath();
 			video.ProjectName=project.getTitle();
-			videos.put(video.title, video);
+			List<Video> listVideo=videos.get(FilenameUtils.getBaseName(video.title));
+			if(listVideo==null){
+				listVideo=new ArrayList<Video>(2);
+			}
+			listVideo.add(video);
+			videos.put(FilenameUtils.getBaseName(video.title), listVideo);
 		}
 		
 		List<ZhuatuService> zhuatuServices = new ArrayList<ZhuatuService>();
@@ -105,10 +111,12 @@ public class YoukuRenameTest {
 									}
 								}
 							});
-							Video video=videos.get(temp.title);
-							if(video!=null){
-								video.date=temp.date;
-								reName(video);
+							List<Video> listVideo=videos.get(temp.title);
+							if(listVideo!=null){
+								for(Video video:listVideo){
+									video.date=temp.date;
+									reName(video);
+								}
 							}
 						}
 
@@ -131,7 +139,7 @@ public class YoukuRenameTest {
 							Node [] links=li.getChildrenAsNodeArray();
 							if(links.length>0&&links[0] instanceof LinkTag){
 								LinkTag link = (LinkTag)links[0];
-								String href = link.getLink();
+								String href = link.getLink().replace("amp;", "");
 								return href;
 							}
 						}
