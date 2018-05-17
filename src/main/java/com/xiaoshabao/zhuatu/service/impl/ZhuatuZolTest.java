@@ -114,7 +114,6 @@ public class ZhuatuZolTest {
 					// 不是最后一次点击下一页
 					if (i < links.size() - 1) {
 						page.getElementById("nextBtn").click();
-						Thread.sleep(500);
 					}
 				}
 				return links.size()==result.size()?result:null;
