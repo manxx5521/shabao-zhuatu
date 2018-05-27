@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xiaoshabao</groupId>
 	<artifactId>shabao-zhuatu</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>抓图程序</name>
 	<description>简单抓图程序</description>
 	<url>http://maven.apache.org</url>
