@@ -46,9 +46,16 @@ public class YoukuRenameTest {
 	protected ZhuatuYoukuReader reader;
 	@Test
 	public void test(){
+		/*
 		projectList.add(new Project("舞灵美娜子", "http://i.youku.com/i/UMTMyNDY4OTE5Ng==/videos?spm=a2hzp.8253869.0.0",
-				"J:\\vm\\热舞多组\\舞灵美娜子\\temp", ""));
-		
+				"J:\\vm\\热舞多组\\舞灵美娜子\\"+"(专辑)20180313003458舞灵美娜子的自频道-优酷视频", ""));
+		*/
+/*
+		projectList.add(new Project("九江华华", "http://i.youku.com/i/UMzAwMjU2NDkyMA==/videos?spm=a2hzp.8253869.0.0",
+				"J:\\vm\\热舞多组\\温柔港湾Z 九江华华\\"+"(专辑)温柔港湾Z的自频道-优酷视频", ""));
+		*/
+		projectList.add(new Project("快乐天使", "http://i.youku.com/i/UMTg2NjA3ODYw/videos?spm=a2hzp.8244740.0.0",
+				"J:\\vm\\热舞多组\\快乐天使 leon7968\\"+"(专辑)leon7968的自频道-优酷视频", ""));
 		for(Project project :projectList){
 			this.start(project);
 		}
@@ -69,6 +76,12 @@ public class YoukuRenameTest {
 			
 			if(name.startsWith("秀舞时代 ")){
 				name=name.replace("秀舞时代 ", "");
+			}
+			if(name.startsWith("舞灵美娜子广场舞 ")){
+				name=name.replace("舞灵美娜子广场舞 ", "");
+			}
+			if(name.startsWith("快乐天使广场舞")){
+				name=name.replaceFirst("快乐天使广场舞", "");
 			}
 			video.toName=name;
 			video.basePath=project.getDownloadPath();
