@@ -108,9 +108,9 @@ public class ZhuatuZolTest {
 						info1.setTitle(title);
 						return info1;
 					});
-
-					result.add(info);
-
+					if(info!=null) {
+						result.add(info);
+					}
 					// 不是最后一次点击下一页
 					if (i < links.size() - 1) {
 						page.getElementById("nextBtn").click();

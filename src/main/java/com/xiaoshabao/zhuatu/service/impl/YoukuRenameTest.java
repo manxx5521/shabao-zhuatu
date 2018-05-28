@@ -43,7 +43,7 @@ public class YoukuRenameTest {
 	private Map<String,List<Video>> videos=new HashMap<String, List<Video>>(50);
 	
 	private List<Project> projectList=new LinkedList<YoukuRenameTest.Project>();
-	protected ZhuatuYoukuReader reader;
+	
 	@Test
 	public void test(){
 		/*
