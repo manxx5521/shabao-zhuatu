@@ -53,9 +53,14 @@ public class YoukuRenameTest {
 /*
 		projectList.add(new Project("九江华华", "http://i.youku.com/i/UMzAwMjU2NDkyMA==/videos?spm=a2hzp.8253869.0.0",
 				"J:\\vm\\热舞多组\\温柔港湾Z 九江华华\\"+"(专辑)温柔港湾Z的自频道-优酷视频", ""));
-		*/
+		*//*
 		projectList.add(new Project("快乐天使", "http://i.youku.com/i/UMTg2NjA3ODYw/videos?spm=a2hzp.8244740.0.0",
 				"J:\\vm\\热舞多组\\快乐天使 leon7968\\"+"(专辑)leon7968的自频道-优酷视频", ""));
+		*/
+		/*projectList.add(new Project("秀舞时代", "http://i.youku.com/i/UMTQ2OTIzMTQ0/videos?spm=a2hzp.8253869.0.0",
+				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)20180503195556秀舞时代的自频道-优酷视频", ""));*/
+		projectList.add(new Project("萍子广场舞", "http://i.youku.com/i/UMTY5MzEwNTk3Mg==/videos?spm=a2hzp.8253869.0.0",
+				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)萍子广场舞，花一开就相爱，编舞茉莉", ""));
 		for(Project project :projectList){
 			this.start(project);
 		}

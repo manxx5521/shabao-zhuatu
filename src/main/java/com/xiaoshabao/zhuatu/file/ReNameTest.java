@@ -12,8 +12,8 @@ public class ReNameTest {
 //	private String rootPath="D:\\soft\\FLV vi\\[秀舞时代]\\最新日期\\"+"(专辑)20180429011413秀舞时代的自频道-优酷视频";
 //	private String prefix="[秀舞时代] 2018.04.08 ";
 	
-	private String rootPath="J:\\vm\\热舞多组\\兰姐广场舞\\"+"精品";
-	private String prefix="[兰姐广场舞] 2017.";
+	private String rootPath="D:\\soft\\FLV Downloader\\test\\"+"(专辑)20180503195556秀舞时代的自频道-优酷视频";
+	private String prefix="[秀舞时代] 2018.04.10 ";
 	
 	@Test
 	public void test(){
