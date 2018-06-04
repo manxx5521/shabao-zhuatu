@@ -33,7 +33,7 @@ public class ZhuatuFengniaoTest {
 //	private String nextUrl = "http://tu.fengniao.com/data/loadAlbum.php";
 	
 	//美女
-	private String indexUrl = "http://tu.fengniao.com/";
+	private String indexUrl = "http://tu.fengniao.com/13/";
 	private String nextUrl = "http://tu.fengniao.com/data/loadHot.php";
 
 	private String lastid;

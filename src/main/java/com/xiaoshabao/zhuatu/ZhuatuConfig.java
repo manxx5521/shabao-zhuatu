@@ -13,6 +13,9 @@ public class ZhuatuConfig {
 	 * 设置保存路径
 	 */
 	private String savePath;
+	
+	/**扩展保存目录，只做项目查询，不保存数据*/
+	private Set<String> extSavePath=new HashSet<String>();
 
 	private RequestMethod method = RequestMethod.GET;
 	/**
@@ -41,6 +44,9 @@ public class ZhuatuConfig {
 	 * 获得基本url 比如：http://tu.fengniao.com
 	 */
 	private String webRoot;
+	
+	/**不下载文件的名称*/
+	private Set<String> noDownloadName=new HashSet<String>();
 
 	/**
 	 * 下载链接解析函数
@@ -101,6 +107,11 @@ public class ZhuatuConfig {
 
 	public String getSavePath() {
 		return savePath;
+	}
+	
+
+	public Set<String> getExtSavePath() {
+		return extSavePath;
 	}
 
 
@@ -170,6 +181,18 @@ public class ZhuatuConfig {
 		}
 		return this;
 	}
+	
+	/**
+	 * 添加不需要下载的文件名称
+	 * @param names
+	 * @return
+	 */
+	public ZhuatuConfig addNoDownloadName(String...names){
+		for(String name:names){
+			noDownloadName.add(name);
+		}
+		return this;
+	}
 
 	/**
 	 * 下载方式
@@ -206,6 +229,17 @@ public class ZhuatuConfig {
 
 	public void setWebRoot(String webRoot) {
 		this.webRoot = webRoot;
+	}
+	
+	/**扩展保存目录，只做项目查询，不保存数据*/
+	public ZhuatuConfig addExtSavePath(String path) {
+		this.extSavePath.add(path);
+		return this;
+	}
+
+
+	public Set<String> getNoDownloadName() {
+		return noDownloadName;
 	}
 	
 }
