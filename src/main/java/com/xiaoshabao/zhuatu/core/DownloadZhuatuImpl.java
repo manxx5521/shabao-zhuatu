@@ -1,10 +1,13 @@
 package com.xiaoshabao.zhuatu.core;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.xiaoshabao.zhuatu.DownloadTuTask;
@@ -92,7 +95,16 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 					return false;
 				}
 			}
-
+			
+			//判断是否需要将项目链接保存
+			if(config.isSaveLink()) {
+				try(OutputStream output= new FileOutputStream(config.getSavePath()+File.separator+"link.txt")){
+					IOUtils.write(tuInfo.getUrl().getBytes(), output);
+				}catch (Exception e) {
+					log.warn("**保存链接失败-> {}。***********",tuInfo.getUrl());
+				}
+			}
+			
 			log.warn("**开始下载项目 {}。(目录：{})***********",ZhuatuUtil.formatTitleName(tuInfo.getTitle()),config.getSavePath());
 		}
 
