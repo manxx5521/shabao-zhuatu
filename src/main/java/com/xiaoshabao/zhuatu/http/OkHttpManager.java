@@ -51,9 +51,6 @@ public class OkHttpManager {
 	    } else {
 	    	if(response.code()==404){
 	    		log.info("url访问失败,404：url->{}",url);
-	    		
-	    		String image=System.getProperty("user.dir")+"\\src\\main\\java\\com\\xiaoshabao\\zhuatu\\image\\404.png";
-	    		FileUtils.copyFile(new File(image.replace("shabao-zhuatu-ext", "shabao-zhuatu")), new File(pathName));
 	    		FileUtils.copyInputStreamToFile(OkHttpManager.class.getResourceAsStream("/images/404.png"), new File(pathName));
 	    	}else{
 	    		throw new IOException("url访问失败返回识别码 " + response+"\n\r url->"+url);
