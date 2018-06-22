@@ -59,8 +59,14 @@ public class YoukuRenameTest {
 		*/
 		/*projectList.add(new Project("秀舞时代", "http://i.youku.com/i/UMTQ2OTIzMTQ0/videos?spm=a2hzp.8253869.0.0",
 				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)20180503195556秀舞时代的自频道-优酷视频", ""));*/
-		projectList.add(new Project("萍子广场舞", "http://i.youku.com/i/UMTY5MzEwNTk3Mg==/videos?spm=a2hzp.8253869.0.0",
-				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)萍子广场舞，花一开就相爱，编舞茉莉", ""));
+		/*projectList.add(new Project("萍子广场舞", "http://i.youku.com/i/UMTY5MzEwNTk3Mg==/videos?spm=a2hzp.8253869.0.0",
+				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)萍子广场舞，你给我的爱，编舞青儿_", ""));*/
+		/*projectList.add(new Project("玉美人梦", "http://i.youku.com/i/UMjkxODU0MDE4MA==/videos?spm=a2hzp.8253869.0.0",
+				"J:\\vm\\热舞多组\\[玉美人梦]\\"+"(专辑)20171221020814玉美人梦的自频道-优酷视频", ""));*/
+		/*projectList.add(new Project("烛英广场舞", "http://i.youku.com/i/UNTM1NTQ1MzI0/videos?spm=a2hzp.8253869.0.0",
+				"J:\\vm\\热舞多组\\[烛英广场舞]\\"+"(专辑)20180319182428优雅莹莹的自频道-优酷视频", ""));*/
+		projectList.add(new Project("冰冰自由舞", "http://i.youku.com/i/UMzYzMjI3MTEwMA==/videos?spm=a2hzp.8253869.0.0",
+				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)冰冰自由舞--好听的动感歌曲19S", ""));
 		for(Project project :projectList){
 			this.start(project);
 		}
@@ -79,24 +85,18 @@ public class YoukuRenameTest {
 			String name=file.getName().replace("_", " ");
 			video.title=name;
 			
-			if(name.startsWith("秀舞时代 ")){
-				name=name.replace("秀舞时代 ", "");
-			}
-			if(name.startsWith("舞灵美娜子广场舞 ")){
-				name=name.replace("舞灵美娜子广场舞 ", "");
-			}
-			if(name.startsWith("快乐天使广场舞")){
-				name=name.replaceFirst("快乐天使广场舞", "");
+			if(name.startsWith(project.getTitle())&&name.length()>(project.getTitle().length()+5)){
+				name=name.replace(project.getTitle(), "");
 			}
 			video.toName=name;
 			video.basePath=project.getDownloadPath();
 			video.ProjectName=project.getTitle();
-			List<Video> listVideo=videos.get(FilenameUtils.getBaseName(video.title));
+			List<Video> listVideo=videos.get(FilenameUtils.getBaseName(video.realName));
 			if(listVideo==null){
 				listVideo=new ArrayList<Video>(2);
 			}
 			listVideo.add(video);
-			videos.put(FilenameUtils.getBaseName(video.title), listVideo);
+			videos.put(FilenameUtils.getBaseName(video.realName), listVideo);
 		}
 		
 		List<ZhuatuService> zhuatuServices = new ArrayList<ZhuatuService>();
@@ -129,13 +129,16 @@ public class YoukuRenameTest {
 									}
 								}
 							});
-							List<Video> listVideo=videos.get(temp.title);
-							if(listVideo!=null){
-								for(Video video:listVideo){
-									video.date=temp.date;
-									reName(video);
+							if(temp.title!=null){
+								List<Video> listVideo=videos.get(temp.title.replace(" ", "_"));
+								if(listVideo!=null){
+									for(Video video:listVideo){
+										video.date=temp.date;
+										reName(video);
+									}
 								}
 							}
+							
 						}
 
 					}
