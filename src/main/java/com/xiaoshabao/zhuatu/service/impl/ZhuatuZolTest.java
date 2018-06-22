@@ -97,11 +97,12 @@ public class ZhuatuZolTest {
 					TuInfo info = retry.execute(page1 -> {
 						HtmlImage img = (HtmlImage) page.getElementById("bigPicHome");
 						String href = img.getSrcAttribute();
-						if (!sets.add(href)) {
+						int size=sets.size();
+						sets.add(href);
+						if (size==sets.size()) {
 							// 跳出重试
 							return null;
 						}
-						// String title = img.getAttribute("alt");
 						String title = pageInfo.getTitle();
 						TuInfo info1 = new TuInfo();
 						info1.setUrl(href);
@@ -116,7 +117,8 @@ public class ZhuatuZolTest {
 						page.getElementById("nextBtn").click();
 					}
 				}
-				return links.size()==result.size()?result:null;
+//				return links.size()==result.size()?result:null;
+				return result;
 			}
 
 			@Override

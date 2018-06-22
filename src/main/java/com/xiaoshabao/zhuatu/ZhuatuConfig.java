@@ -47,6 +47,9 @@ public class ZhuatuConfig {
 	
 	/**不下载文件的名称*/
 	private Set<String> noDownloadName=new HashSet<String>();
+	
+	/**是否保存项目链接地址*/
+	private boolean saveLink=false;
 
 	/**
 	 * 下载链接解析函数
@@ -240,6 +243,16 @@ public class ZhuatuConfig {
 
 	public Set<String> getNoDownloadName() {
 		return noDownloadName;
+	}
+
+
+	public boolean isSaveLink() {
+		return saveLink;
+	}
+
+
+	public void setSaveLink(boolean saveLink) {
+		this.saveLink = saveLink;
 	}
 	
 }
