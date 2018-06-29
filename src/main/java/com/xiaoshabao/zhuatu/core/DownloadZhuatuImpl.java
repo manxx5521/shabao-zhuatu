@@ -3,7 +3,6 @@ package com.xiaoshabao.zhuatu.core;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -24,8 +23,6 @@ import com.xiaoshabao.zhuatu.service.able.ZhuatuWaitAble;
 public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 	/** 是否需要下载池 */
 	private boolean isNeedPool = false;
-	/** 存储已经下载的项目列表 */
-	protected List<String> projects = new LinkedList<String>();
 
 	/**
 	 * 初始化服务列表
@@ -64,7 +61,7 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 		}
 		for (File file : path.listFiles()) {
 			if (file.isDirectory()) {
-				projects.add(file.getName());
+				DataCache.getInstance().addProject(file.getName());
 			}
 		}
 	}
@@ -76,7 +73,19 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 	protected boolean exeCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
 		// 如果是项目服务，进行项目比对排重
 		if (service instanceof ProjectAble) {
-			if (projects.contains(ZhuatuUtil.formatTitleName(tuInfo.getTitle()))) {
+			
+			String name=ZhuatuUtil.formatTitleName(tuInfo.getTitle());
+			
+			//判断是否是活跃程序
+			synchronized (DownloadZhuatuImpl.class) {
+				if(DataCache.getInstance().isActiveProject(name)){
+					return false;
+				}else {
+					DataCache.getInstance().addActiveProject(name);
+				}
+			}
+			
+			if (!DataCache.getInstance().addProject(name)) {
 				log.warn("项目 {} 未下载（项目已经存在）。", tuInfo.getTitle());
 				return false;
 			}
@@ -140,9 +149,19 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 		}
 		return true;
 	}
+	
+	
+
+	//当前项目解析完成后
+	@Override
+	protected void endCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
+		if (service instanceof ProjectAble) {
+			DataCache.getInstance().putActiveToProject(ZhuatuUtil.formatTitleName(tuInfo.getTitle()));
+		}
+	}
 
 	@Override
-	public void start(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
+	public void init(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
 		super.start(url, zhuatuServices, config);
 		ZhuatuDownloadPool.getInstance().shutdown();
 	}

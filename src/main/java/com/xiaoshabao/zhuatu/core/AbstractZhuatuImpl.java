@@ -2,6 +2,7 @@ package com.xiaoshabao.zhuatu.core;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -75,7 +76,11 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 
 			TuInfo info = new TuInfo();
 			info.setUrl(url);
-			parserPage(info, 0, true);
+			for(int i=0;i<config.getThreadCount();i++) {
+				CompletableFuture.runAsync(() -> {
+					parserPage(info, 0, true);
+				});
+			}
 		} catch (Exception e) {
 			log.error("程序异常结束", e);
 		}
@@ -144,6 +149,9 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 					// 进行下一层任务
 					parserPageNextIdx(tuInfo, zhuatuServices.get(idx + 1), idx + 1);
 				}
+				
+				// 结束扩展
+				endCurrPageProjet(zhuatuService, tuInfo);
 			}
 		}else{
 			log.error("url解析内容 未能正常返回直接跳过,进行下一页  url->{}", pageInfo.getUrl());
@@ -181,6 +189,15 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 	 */
 	protected boolean exeCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
 		return true;
+	}
+	
+	/**
+	 * 对当前页解析以及下层内容解析完成后的扩展
+	 * @param service
+	 * @param tuInfo
+	 *            解析出的项目（列表中的一个）
+	 */
+	protected void endCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
 	}
 
 	/**

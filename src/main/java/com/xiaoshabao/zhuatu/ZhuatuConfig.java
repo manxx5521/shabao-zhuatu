@@ -50,6 +50,11 @@ public class ZhuatuConfig {
 	
 	/**是否保存项目链接地址*/
 	private boolean saveLink=false;
+	
+	/**
+	 * 通过几个线程抓取
+	 */
+	private int threadCount=1;
 
 	/**
 	 * 下载链接解析函数
@@ -254,5 +259,16 @@ public class ZhuatuConfig {
 	public void setSaveLink(boolean saveLink) {
 		this.saveLink = saveLink;
 	}
+
+
+	public int getThreadCount() {
+		return threadCount;
+	}
+
+
+	public void setThreadCount(int threadCount) {
+		this.threadCount = threadCount;
+	}
+	
 	
 }
