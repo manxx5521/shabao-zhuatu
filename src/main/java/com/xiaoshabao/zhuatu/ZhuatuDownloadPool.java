@@ -1,6 +1,7 @@
 package com.xiaoshabao.zhuatu;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -9,7 +10,26 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 	private volatile static ZhuatuDownloadPool instance = null;
 
 	private ZhuatuDownloadPool() {
-		super(10, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		super(10, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(100),new BlockPolicy());
+	}
+	
+	/**
+	 * 线程池拒绝策略，当队列满了时调用put方法，堵塞队列
+	 */
+	public static class BlockPolicy implements RejectedExecutionHandler {
+
+		public BlockPolicy() {
+		}
+
+		@Override
+		public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+			try {
+				e.getQueue().put( r );
+			}
+			catch (InterruptedException e1) {
+				Thread.currentThread().interrupt();
+			}
+		}
 	}
 
 	/**
@@ -44,14 +64,14 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 	/**
 	 * 等待活跃的进程数小于5
 	 */
-	public void waitActiveThread() {
+	/*public void waitActiveThread() {
 		waitActiveThread(5);
-	}
+	}*/
 
 	/**
 	 * 等待活跃的进程数小于 size
 	 */
-	public void waitActiveThread(int size) {
+	/*public void waitActiveThread(int size) {
 		while (true) {
 			if (this.getActiveCount() < 5) {
 				return;
@@ -64,5 +84,5 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 			}
 
 		}
-	}
+	}*/
 }

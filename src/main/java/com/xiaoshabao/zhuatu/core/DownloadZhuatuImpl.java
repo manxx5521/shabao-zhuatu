@@ -117,11 +117,15 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 			log.warn("**开始下载项目 {}。(目录：{})***********",ZhuatuUtil.formatTitleName(tuInfo.getTitle()),config.getSavePath());
 		}
 
-		// 需要等待相同内容连接池
-		if (isNeedPool && service instanceof ZhuatuWaitAble) {
+		// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
+		/*if (isNeedPool && service instanceof ZhuatuWaitAble) {
 			// 等待现成
-			ZhuatuDownloadPool.getInstance().waitActiveThread();
-		}
+//			ZhuatuDownloadPool.getInstance().waitActiveThread();
+			if(ZhuatuDownloadPool.getInstance().getQueue().size()>100) {
+				
+			}
+			
+		}*/
 
 		// 如果是需要下载的url
 		if (service instanceof ZhuatuDownloadAble) {
