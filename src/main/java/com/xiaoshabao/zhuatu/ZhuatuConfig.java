@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import com.xiaoshabao.zhuatu.http.HttpType;
+import com.xiaoshabao.zhuatu.http.OkHttpManager;
 
 public class ZhuatuConfig {
 
@@ -151,10 +152,24 @@ public class ZhuatuConfig {
 	 * 添加不需要下载的url前缀比如 http://www.baidu.com/
 	 * @return
 	 */
-	public ZhuatuConfig addNoUrl(String url){
-		noUrl.add(url);
+	public ZhuatuConfig addNoUrl(String urlPrefix){
+		noUrl.add(urlPrefix);
 		return this;
 	}
+	
+	/**
+	 * 测试添加，url是否可以下载
+	 * @param urlPrefix url前缀比如 http://www.baidu.com/
+	 * @param url 全路径url用来测试，是否可以返回内容
+	 * @return
+	 */
+	public ZhuatuConfig testNoUrl(String urlPrefix,String url){
+		if(!OkHttpManager.getInstance().testUrl(url)) {
+			noUrl.add(urlPrefix);
+		}
+		return this;
+	}
+	
 	/**
 	 * 添加不需要下载的url前缀比如 http://www.baidu.com/
 	 * @return

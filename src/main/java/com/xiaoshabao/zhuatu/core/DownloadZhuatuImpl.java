@@ -18,11 +18,10 @@ import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.able.LoadFileAble;
 import com.xiaoshabao.zhuatu.service.able.ProjectAble;
 import com.xiaoshabao.zhuatu.service.able.ZhuatuDownloadAble;
-import com.xiaoshabao.zhuatu.service.able.ZhuatuWaitAble;
 
 public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 	/** 是否需要下载池 */
-	private boolean isNeedPool = false;
+	protected boolean isNeedPool = false;
 
 	/**
 	 * 初始化服务列表

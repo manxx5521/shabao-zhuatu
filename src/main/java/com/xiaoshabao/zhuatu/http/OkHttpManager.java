@@ -35,6 +35,11 @@ public class OkHttpManager {
 		return instance;
 	}
 	
+	/**
+	 * 下载文件文件到指定目录（尝试5次）
+	 * @param url
+	 * @param pathName
+	 */
 	public void download5(String url, String pathName) {
 		new RetryFactory<String, Boolean>(url, "下载文件"+url).execute(t -> {
 			this.download(url, pathName);
@@ -57,6 +62,25 @@ public class OkHttpManager {
 	    	}
 	    	
 	    }
+	}
+	
+	/**
+	 * 尝试访问url查看是否可以访问成功
+	 * @param url
+	 * @return true成功访问，false访问失败
+	 */
+	public boolean testUrl(String url) {
+		try {
+			Request request = new Request.Builder().url(url).build();
+			Response response = client.newCall(request).execute();
+		    if (response.isSuccessful()||response.code()==404) {
+		    	return true;
+		    }
+		} catch (Exception e) {
+		}
+		log.debug("url无法访问成功，url->{}",url);
+		return false;
+		
 	}
 	
 
