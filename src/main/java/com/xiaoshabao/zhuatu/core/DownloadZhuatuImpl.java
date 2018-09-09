@@ -18,6 +18,7 @@ import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.able.LoadFileAble;
 import com.xiaoshabao.zhuatu.service.able.ProjectAble;
 import com.xiaoshabao.zhuatu.service.able.ZhuatuDownloadAble;
+import com.xiaoshabao.zhuatu.service.able.ZhuatuWaitAble;
 
 public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 	/** 是否需要下载池 */
@@ -38,13 +39,15 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 				log.error("启用了加载本地文件接口，但是没有配置本地文件目录");
 				return;
 			} 
+			log.debug("开始加载本地目录****");
+			log.debug("-----");
 			//添加保存目录
 			addProjectPath(config.getSavePath());
 			//添加查询目录
 			for(String path:config.getExtSavePath()) {
 				addProjectPath(path);
 			}
-			
+			log.debug("结束加载本地目录****");
 		}
 		
 		if (service instanceof ZhuatuDownloadAble) {
@@ -117,14 +120,15 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 		}
 
 		// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
-		/*if (isNeedPool && service instanceof ZhuatuWaitAble) {
-			// 等待现成
-//			ZhuatuDownloadPool.getInstance().waitActiveThread();
+		if (isNeedPool && service instanceof ZhuatuWaitAble) {
+			// 等待线程完成
+			System.out.println();
+			/*ZhuatuDownloadPool.getInstance().waitActiveThread();
 			if(ZhuatuDownloadPool.getInstance().getQueue().size()>100) {
 				
-			}
+			}*/
 			
-		}*/
+		}
 
 		// 如果是需要下载的url
 		if (service instanceof ZhuatuDownloadAble) {
@@ -165,7 +169,7 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 
 	@Override
 	public void init(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
-		super.start(url, zhuatuServices, config);
+		super.init(url, zhuatuServices, config);
 		ZhuatuDownloadPool.getInstance().shutdown();
 	}
 	

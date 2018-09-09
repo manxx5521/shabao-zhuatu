@@ -3,6 +3,7 @@ package com.xiaoshabao.zhuatu.core;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -76,11 +77,14 @@ public abstract class AbstractZhuatuImpl implements ZhuatuAble {
 
 			TuInfo info = new TuInfo();
 			info.setUrl(url);
+			final CountDownLatch latch=new CountDownLatch(config.getThreadCount());
 			for(int i=0;i<config.getThreadCount();i++) {
 				CompletableFuture.runAsync(() -> {
 					parserPage(info, 0, true);
+					latch.countDown();
 				});
 			}
+			latch.await();
 		} catch (Exception e) {
 			log.error("程序异常结束", e);
 		}

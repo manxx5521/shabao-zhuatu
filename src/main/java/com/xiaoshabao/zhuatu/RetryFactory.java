@@ -2,6 +2,8 @@ package com.xiaoshabao.zhuatu;
 
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,8 @@ public class RetryFactory<T, R> {
 	private int count = 5;
 	
 	private int sleepTime=1000*3;
+	
+	Map<Class<?>,Integer> exceptionCount=new HashMap<Class<?>,Integer>();
 
 	/**
 	 * 描述信息
@@ -81,6 +85,13 @@ public class RetryFactory<T, R> {
 				//记录最后一次错误信息
 				if (i == count) {
 					laste = e;
+				}else{
+					if(exceptionCount.containsKey(e.getClass())){
+						Integer number=exceptionCount.get(e.getClass());
+						if(number<count){
+							count=number;
+						}
+					}
 				}
 			}
 			try {
@@ -91,16 +102,29 @@ public class RetryFactory<T, R> {
 		} while (true);
 	}
 
-	public void setDetailMsg(String detailMsg) {
+	public RetryFactory<T, R> setDetailMsg(String detailMsg) {
 		this.detailMsg = detailMsg;
+		return this;
 	}
 
-	public void setCount(int count) {
+	public RetryFactory<T, R> setCount(int count) {
 		this.count = count;
+		return this;
 	}
 
-	public void setSleepTime(int sleepTime) {
+	public RetryFactory<T, R> setSleepTime(int sleepTime) {
 		this.sleepTime = sleepTime;
+		return this;
+	}
+	
+	/**
+	 * 出现某些异常时可以减少循环次数
+	 * @param Clazz Exception.class
+	 * @param number
+	 */
+	public RetryFactory<T, R> addExceptionCount(Class<?> Clazz,int number){
+		exceptionCount.put(Clazz, number);
+		return this;
 	}
 
 }

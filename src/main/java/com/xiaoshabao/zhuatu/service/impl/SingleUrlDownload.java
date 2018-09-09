@@ -8,7 +8,7 @@ public class SingleUrlDownload {
 	
 	@Test
 	public void test(){
-		String url="http://p1.qhimgs4.com/t01de8cf41f9fee867d.webp";
+		String url="http://s6tu.com/images/2018/08/11/2017-08-03-220242.md.jpg";
 		
 		String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
 		OkHttpManager.getInstance().download5(url, "E:\\test\\shabao-m\\resources\\plugins\\mm\\"+fileName);

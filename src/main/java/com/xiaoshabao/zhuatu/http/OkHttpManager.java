@@ -2,6 +2,8 @@ package com.xiaoshabao.zhuatu.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,7 +43,10 @@ public class OkHttpManager {
 	 * @param pathName
 	 */
 	public void download5(String url, String pathName) {
-		new RetryFactory<String, Boolean>(url, "下载文件"+url).execute(t -> {
+		new RetryFactory<String, Boolean>(url, "下载文件"+url)
+			.addExceptionCount(SocketException.class, 2)
+			.addExceptionCount(SocketTimeoutException.class, 3)
+			.execute(t -> {
 			this.download(url, pathName);
 			log.info("下载文件成功 url->{}", url);
 			return Boolean.TRUE;
