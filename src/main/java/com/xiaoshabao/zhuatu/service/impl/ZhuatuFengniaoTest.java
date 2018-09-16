@@ -74,7 +74,7 @@ public class ZhuatuFengniaoTest {
 				return null;
 			}
 		});
-		ZhuatuFactory.createDownloadZhuatu().start(indexUrl, zhuatuServices1);
+		ZhuatuFactory.start(indexUrl, zhuatuServices1);
 
 		// 第二个任务查找具体内容
 		List<ZhuatuService> zhuatuServices = new ArrayList<ZhuatuService>();
@@ -146,7 +146,7 @@ public class ZhuatuFengniaoTest {
 		config.setDownlaodUrlParser(url->{
 			return url.substring(0, url.indexOf("?"));
 		});
-		ZhuatuFactory.createDownloadZhuatu().start(getNextUrl(), zhuatuServices, config);
+		ZhuatuFactory.start(getNextUrl(), zhuatuServices, config);
 	}
 
 	private String getNextUrl() {

@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.DownloadTuTask;
 import com.xiaoshabao.zhuatu.TuInfo;
@@ -20,14 +22,33 @@ import com.xiaoshabao.zhuatu.service.able.ProjectAble;
 import com.xiaoshabao.zhuatu.service.able.ZhuatuDownloadAble;
 import com.xiaoshabao.zhuatu.service.able.ZhuatuWaitAble;
 
-public class DownloadZhuatuImpl extends ZhuatuToHeavy {
+public class DownloadZhuatuImpl extends Decorator {
+	private final static Logger log = LoggerFactory
+			.getLogger(DownloadZhuatuImpl.class);
+	
 	/** 是否需要下载池 */
 	protected boolean isNeedPool = false;
+	
+	private ZhuatuConfig config;
+	
+	public DownloadZhuatuImpl(ZhuatuParser parser) {
+		super(parser);
+	}
+	
+
+	@Override
+	public void init(List<ZhuatuService> serviceList,ZhuatuConfig config) {
+		super.init(serviceList,config);
+		
+		this.config=config;
+		for(ZhuatuService service:serviceList){
+			initBeforSerivce(service);
+		}
+	}
 
 	/**
 	 * 初始化服务列表
 	 */
-	@Override
 	protected void initBeforSerivce(ZhuatuService service) {
 		if (service instanceof ZhuatuDownloadAble) {
 			isNeedPool = true;
@@ -67,111 +88,123 @@ public class DownloadZhuatuImpl extends ZhuatuToHeavy {
 			}
 		}
 	}
-
+	
+	
 	/**
 	 * 解析当前页项目
 	 */
 	@Override
-	protected boolean exeCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
-		// 如果是项目服务，进行项目比对排重
-		if (service instanceof ProjectAble) {
-			
-			String name=ZhuatuUtil.formatTitleName(tuInfo.getTitle());
-			
-			//判断是否是活跃程序
-			synchronized (DownloadZhuatuImpl.class) {
-				if(DataCache.getInstance().isActiveProject(name)){
-					return false;
-				}else {
-					DataCache.getInstance().addActiveProject(name);
-				}
-			}
-			
-			if (!DataCache.getInstance().addProject(name)) {
-				log.warn("项目 {} 未下载（项目已经存在）。", tuInfo.getTitle());
-				return false;
-			}
-			// 如果有优先项目，先执行优先项目，其他跳过
-			if (config.getFirstProject().size() > 0) {
-				//是优先项目标志
-				boolean flag=false;
-				for(String title:config.getFirstProject()){
-					if(tuInfo.getTitle().contains(title)){
-						flag=true;
-						break;
+	public boolean doReturnProject(ZhuatuService service, TuInfo info) {
+		if( super.doReturnProject(service, info)){
+			// 如果是项目服务，进行项目比对排重
+			if (service instanceof ProjectAble) {
+				
+				String name=ZhuatuUtil.formatTitleName(info.getTitle());
+				
+				//判断是否是活跃程序
+				synchronized (DownloadZhuatuImpl.class) {
+					if(DataCache.getInstance().isActiveProject(name)){
+						return false;
+					}else {
+						DataCache.getInstance().addActiveProject(name);
 					}
 				}
-				//不是优先项目就跳过
-				if(!flag){
-					return false;
-				}
-			}
-			
-			//判断是否需要将项目链接保存
-			if(config.isSaveLink()) {
-				try(OutputStream output= new FileOutputStream(config.getSavePath()+File.separator+"link.txt")){
-					IOUtils.write(tuInfo.getUrl().getBytes(), output);
-				}catch (Exception e) {
-					log.warn("**保存链接失败-> {}。***********",tuInfo.getUrl());
-				}
-			}
-			
-			log.warn("**开始下载项目 {}。(目录：{})***********",ZhuatuUtil.formatTitleName(tuInfo.getTitle()),config.getSavePath());
-		}
-
-		// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
-		if (isNeedPool && service instanceof ZhuatuWaitAble) {
-			// 等待线程完成
-			System.out.println();
-			/*ZhuatuDownloadPool.getInstance().waitActiveThread();
-			if(ZhuatuDownloadPool.getInstance().getQueue().size()>100) {
 				
-			}*/
-			
-		}
-
-		// 如果是需要下载的url
-		if (service instanceof ZhuatuDownloadAble) {
-			String fileNameUrl = tuInfo.getUrl();
-			if (fileNameUrl.contains("?")&&fileNameUrl.lastIndexOf("/")<fileNameUrl.lastIndexOf("?")) {
-				fileNameUrl = fileNameUrl.substring(0, fileNameUrl.indexOf("?"));
-			}
-			String fileName = ZhuatuUtil.formatTitleName(fileNameUrl.substring(fileNameUrl.lastIndexOf("/") + 1, fileNameUrl.length()));
-			
-			String downloadUrl=parserDowloadUrl(tuInfo.getUrl());
-			//判断是否是不下载url
-			if (config.getNoDownloadName().size() > 0) {
-				String baseName=FilenameUtils.getBaseName(fileName);
-				if(config.getNoDownloadName().contains(baseName)) {
+				if (!DataCache.getInstance().addProject(name)) {
+					log.warn("项目 {} 未下载（项目已经存在）。", info.getTitle());
 					return false;
 				}
+				// 如果有优先项目，先执行优先项目，其他跳过
+				if (config.getFirstProject().size() > 0) {
+					//是优先项目标志
+					boolean flag=false;
+					for(String title:config.getFirstProject()){
+						if(info.getTitle().contains(title)){
+							flag=true;
+							break;
+						}
+					}
+					//不是优先项目就跳过
+					if(!flag){
+						return false;
+					}
+				}
+				
+				//判断是否需要将项目链接保存
+				if(config.isSaveLink()) {
+					try(OutputStream output= new FileOutputStream(config.getSavePath()+File.separator+"link.txt")){
+						IOUtils.write(info.getUrl().getBytes(), output);
+					}catch (Exception e) {
+						log.warn("**保存链接失败-> {}。***********",info.getUrl());
+					}
+				}
+				
+				log.warn("**开始下载项目 {}。(目录：{})***********",ZhuatuUtil.formatTitleName(info.getTitle()),config.getSavePath());
 			}
-			
-			log.info("装载下载链接：" + fileNameUrl);
-			DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot())
-					,config.getSavePath() + File.separator
-						+ZhuatuUtil.formatTitleName(tuInfo.getTitle()) + File.separator + fileName
-					,config.getDwonloadType());
-			ZhuatuDownloadPool.getInstance().execute(myTask);
+
+			// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
+			if (isNeedPool && service instanceof ZhuatuWaitAble) {
+				// 等待线程完成
+				System.out.println();
+				/*ZhuatuDownloadPool.getInstance().waitActiveThread();
+				if(ZhuatuDownloadPool.getInstance().getQueue().size()>100) {
+					
+				}*/
+				
+			}
+
+			// 如果是需要下载的url
+			if (service instanceof ZhuatuDownloadAble) {
+				String fileNameUrl = info.getUrl();
+				if (fileNameUrl.contains("?")&&fileNameUrl.lastIndexOf("/")<fileNameUrl.lastIndexOf("?")) {
+					fileNameUrl = fileNameUrl.substring(0, fileNameUrl.indexOf("?"));
+				}
+				String fileName = ZhuatuUtil.formatTitleName(fileNameUrl.substring(fileNameUrl.lastIndexOf("/") + 1, fileNameUrl.length()));
+				
+				String downloadUrl=parserDowloadUrl(info.getUrl());
+				//判断是否是不下载url
+				if (config.getNoDownloadName().size() > 0) {
+					String baseName=FilenameUtils.getBaseName(fileName);
+					if(config.getNoDownloadName().contains(baseName)) {
+						return false;
+					}
+				}
+				
+				log.info("装载下载链接：" + fileNameUrl);
+				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot())
+						,config.getSavePath() + File.separator
+							+ZhuatuUtil.formatTitleName(info.getTitle()) + File.separator + fileName
+						,config.getDwonloadType());
+				ZhuatuDownloadPool.getInstance().execute(myTask);
+			}
 		}
 		return true;
 	}
-	
-	
 
+
+	
+	
 	//当前项目解析完成后
 	@Override
-	protected void endCurrPageProjet(ZhuatuService service, TuInfo tuInfo) {
+	public void afterPageProjet(ZhuatuService service, TuInfo info) {
+		super.afterPageProjet(service, info);
+		
 		if (service instanceof ProjectAble) {
-			DataCache.getInstance().putActiveToProject(ZhuatuUtil.formatTitleName(tuInfo.getTitle()));
+			DataCache.getInstance().putActiveToProject(ZhuatuUtil.formatTitleName(info.getTitle()));
 		}
 	}
 
+
+	
+	
+
 	@Override
-	public void init(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
-		super.init(url, zhuatuServices, config);
+	public void afterRuning() {
+		getParser().afterRuning();
+		
 		ZhuatuDownloadPool.getInstance().shutdown();
 	}
+
 	
 	/**
 	 * 根据配置config信息，调整下载url

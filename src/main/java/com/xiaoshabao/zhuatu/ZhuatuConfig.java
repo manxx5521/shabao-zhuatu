@@ -8,6 +8,8 @@ import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.http.OkHttpManager;
 
 public class ZhuatuConfig {
+	/**初始url*/
+	private String url;
 
 	private String charset = "UTF-8";
 	/**
@@ -284,6 +286,16 @@ public class ZhuatuConfig {
 	public void setThreadCount(int threadCount) {
 		this.threadCount = threadCount;
 	}
-	
+
+
+	public String getUrl() {
+		return url;
+	}
+
+
+	public ZhuatuConfig setUrl(String url) {
+		this.url = url;
+		return this;
+	}
 	
 }

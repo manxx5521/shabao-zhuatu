@@ -126,7 +126,7 @@ public class ZhuatuZolTest {
 				return null;
 			}
 		});
-		ZhuatuFactory.createDownloadZhuatu().start(indexUrl, zhuatuServices, "E:\\test\\shabao-m\\resources\\plugins\\mm\\zol", "gb2312");
+		ZhuatuFactory.start(indexUrl, zhuatuServices, "E:\\test\\shabao-m\\resources\\plugins\\mm\\zol", "gb2312");
 	}
 
 }

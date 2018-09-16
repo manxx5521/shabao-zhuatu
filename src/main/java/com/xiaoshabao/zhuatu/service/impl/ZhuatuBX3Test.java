@@ -97,7 +97,7 @@ public class ZhuatuBX3Test {
 				return null;
 			}
 		});
-		ZhuatuFactory.createDownloadZhuatu().start(indexUrl, zhuatuServices, "E:\\test\\shabao-m\\resources\\plugins\\mm\\bx3", "gb2312");
+		ZhuatuFactory.start(indexUrl, zhuatuServices, "E:\\test\\shabao-m\\resources\\plugins\\mm\\bx3", "gb2312");
 
 	}
 

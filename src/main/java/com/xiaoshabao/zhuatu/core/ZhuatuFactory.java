@@ -1,36 +1,35 @@
 package com.xiaoshabao.zhuatu.core;
 
-import com.xiaoshabao.zhuatu.ZhuatuAble;
+import java.util.List;
+
+import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.service.ZhuatuService;
 
 /**
  * 抓图工厂
  */
 public class ZhuatuFactory {
 	
-	/**
-	 * 简单抓图任务
-	 * @return
-	 */
-	public static ZhuatuAble createBaseZhuatu() {
-		return new SimpleZhuatuImpl();
+	final public static void start(String url, List<ZhuatuService> zhuatuServices) {
+		start(url, zhuatuServices, new ZhuatuConfig());
 	}
-	
-	/**
-	 * 排重抓图任务
-	 * <p>对统一链接过滤，不再抓取</p>
-	 * @return
-	 */
-	public static ZhuatuAble createHeavyZhuatu() {
-		return new ZhuatuToHeavy();
-	}
-	/**
-	 * 下载抓图任务
-	 * <p>对统一链接过滤，不再抓取</p>
-	 * @return
-	 */
-	public static ZhuatuAble createDownloadZhuatu() {
-		return new DownloadZhuatuImpl();
-	}
-	
 
+	final public static void start(String url, List<ZhuatuService> zhuatuServices, String savePath) {
+		ZhuatuConfig config = new ZhuatuConfig();
+		config.setSavePath(savePath);
+		start(url, zhuatuServices, config);
+	}
+
+	final public static void start(String url, List<ZhuatuService> zhuatuServices, String savePath, String charset) {
+		ZhuatuConfig config = new ZhuatuConfig();
+		config.setSavePath(savePath);
+		config.setCharset(charset);
+		start(url, zhuatuServices, config);
+	}
+
+	public static void start(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
+		config.setUrl(url);
+		ZhuatuCenter center=new ZhuatuCenter(config,zhuatuServices);
+		center.run();
+	}
 }

@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 
@@ -14,37 +17,45 @@ import com.xiaoshabao.zhuatu.service.ZhuatuService;
  * 抓图工具
  * <p>对URL去重</p>
  */
-public class ZhuatuToHeavy extends AbstractZhuatuImpl{
+public class ZhuatuToHeavy extends Decorator{
+
+	private final static Logger log = LoggerFactory
+			.getLogger(ZhuatuToHeavy.class);
 	
 	
 	private Map<Integer,List<String>> pageMap=new HashMap<Integer,List<String>>();
+	
+	public ZhuatuToHeavy(ZhuatuParser parser) {
+		super(parser);
+	}
 
 	@Override
-	protected void parserPage(TuInfo pageInfo, int idx,boolean newProject) {
-		List<String> pages=pageMap.get(idx);
-		String url=pageInfo.getUrl();
+	public void beforPageProjet(ZhuatuService service, TuInfo info,int index) {
+		super.beforPageProjet(service, info,index);
+		List<String> pages=pageMap.get(index);
+		String url=info.getUrl();
 		if(pages==null){
 			pages=new LinkedList<String>();
 			pages.add(url);
-			pageMap.put(idx, pages);
+			pageMap.put(index, pages);
 		}else if(!pages.contains(url)){
 			pages.add(url);
 		}else{
-			log.info("{}已经解析过了",pageInfo.getTitle()==null?"":pageInfo.getTitle());
+			log.info("{}已经解析过了",info.getTitle()==null?"":info.getTitle());
 			return;
 		}
-		super.parserPage(pageInfo, idx, newProject);
+		
 	}
 	
 	
 
-	//如果是下一层任务，把存储的临时信息清空，避免内存浪费
+
+
 	@Override
-	protected void parserPageNextIdx(TuInfo pageInfo,
-			ZhuatuService zhuatuService, int idx) {
-		pageMap.put(idx, new LinkedList<String>());
-		super.parserPageNextIdx(pageInfo, zhuatuService, idx);
+	public void beforNextService(TuInfo info, ZhuatuService nextService,
+			int nextIndex) {
+		super.beforNextService(info, nextService, nextIndex);
+		pageMap.put(nextIndex, new LinkedList<String>());
 	}
-
 
 }
