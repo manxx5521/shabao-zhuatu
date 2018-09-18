@@ -58,6 +58,16 @@ public class ZhuatuConfig {
 	 * 通过几个线程抓取
 	 */
 	private int threadCount=1;
+	
+	/**
+	 * 代理设置
+	 */
+	private String proxyIp;
+	
+	/**
+	 * 代理端口
+	 */
+	private int proxyPort;
 
 	/**
 	 * 下载链接解析函数
@@ -158,6 +168,7 @@ public class ZhuatuConfig {
 		noUrl.add(urlPrefix);
 		return this;
 	}
+	
 	
 	/**
 	 * 测试添加，url是否可以下载
@@ -295,6 +306,22 @@ public class ZhuatuConfig {
 
 	public ZhuatuConfig setUrl(String url) {
 		this.url = url;
+		return this;
+	}
+
+
+	public String getProxyIp() {
+		return proxyIp;
+	}
+
+
+	public int getProxyPort() {
+		return proxyPort;
+	}
+	
+	public ZhuatuConfig setProxyConfig(String ip,Integer port){
+		this.proxyIp=ip;
+		this.proxyPort=port;
 		return this;
 	}
 	

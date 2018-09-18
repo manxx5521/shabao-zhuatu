@@ -2,8 +2,6 @@ package com.xiaoshabao.zhuatu.http;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,7 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xiaoshabao.zhuatu.RetryFactory;
+import com.xiaoshabao.zhuatu.DownloadRetry;
 
 
 public class BaseOkHttp {
@@ -23,14 +21,14 @@ public class BaseOkHttp {
 	protected OkHttpClient client = null;
 	
 	/**
-	 * 下载文件文件到指定目录（尝试5次）
+	 * 下载文件文件到指定目录（尝试N次）
 	 * @param url
 	 * @param pathName
+	 * @param count 尝试次数
 	 */
-	public void download5(String url, String pathName) {
-		new RetryFactory<String, Boolean>(url, "下载文件"+url)
-			.addExceptionCount(SocketException.class, 2)
-			.addExceptionCount(SocketTimeoutException.class, 3)
+	public void download(String url, String pathName,int count) {
+		new DownloadRetry<String, Boolean>(url, "下载文件"+url)
+			.setCount(2)
 			.execute(t -> {
 			this.download(url, pathName);
 			log.info("下载文件成功 url->{}", url);
@@ -38,7 +36,7 @@ public class BaseOkHttp {
 		});
 	}
 	
-	private void download(String url, String pathName) throws Exception {
+	public void download(String url, String pathName) throws Exception {
 		Request request = new Request.Builder().url(url).build();
 		Response response = getClient().newCall(request).execute();
 	    if (response.isSuccessful()) {

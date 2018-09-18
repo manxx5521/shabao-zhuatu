@@ -1,7 +1,9 @@
 package com.xiaoshabao.zhuatu;
 
+import com.xiaoshabao.zhuatu.exception.ConnectException;
 import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.http.OkHttpManager;
+import com.xiaoshabao.zhuatu.http.ProxyOkHttp;
 import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
 
 public class DownloadTuTask implements Runnable {
@@ -27,16 +29,21 @@ public class DownloadTuTask implements Runnable {
 
 	@Override
 	public void run() {
-		switch(httpType){
-		case HTTPCLIENT:
-			ZhuatuHttpManager.getInstance().download5(url, fileNamePath);
-			break;
-		case OKHTTP:
-			OkHttpManager.getInstance().download5(url, fileNamePath);
-			break;
-		default:
-			break;
+		try {
+			switch(httpType){
+			case HTTPCLIENT:
+				ZhuatuHttpManager.getInstance().download5(url, fileNamePath);
+				break;
+			case OKHTTP:
+				OkHttpManager.getInstance().download(url, fileNamePath,5);
+				break;
+			default:
+				break;
+			}
+		} catch (ConnectException e) {
+			ProxyOkHttp.getInstance("127.0.0.1", 1080).download(url, fileNamePath,2);
 		}
+		
 		
 	}
 

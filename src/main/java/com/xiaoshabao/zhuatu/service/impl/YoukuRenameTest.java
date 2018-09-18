@@ -47,8 +47,7 @@ public class YoukuRenameTest {
 	@Test
 	public void test(){
 		/*
-		projectList.add(new Project("舞灵美娜子", "http://i.youku.com/i/UMTMyNDY4OTE5Ng==/videos?spm=a2hzp.8253869.0.0",
-				"J:\\vm\\热舞多组\\舞灵美娜子\\"+"(专辑)20180313003458舞灵美娜子的自频道-优酷视频", ""));
+		
 		projectList.add(new Project("九江华华", "http://i.youku.com/i/UMzAwMjU2NDkyMA==/videos?spm=a2hzp.8253869.0.0",
 				"J:\\vm\\热舞多组\\温柔港湾Z 九江华华\\"+"(专辑)温柔港湾Z的自频道-优酷视频", ""));
 		projectList.add(new Project("快乐天使", "http://i.youku.com/i/UMTg2NjA3ODYw/videos?spm=a2hzp.8244740.0.0",
@@ -64,12 +63,14 @@ public class YoukuRenameTest {
 		/*projectList.add(new Project("冰冰自由舞", "http://i.youku.com/i/UMzYzMjI3MTEwMA==/videos?spm=a2hzp.8253869.0.0",
 				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)冰冰自由舞--好听的动感歌曲19S", ""));
 		projectList.add(new Project("炫舞世家", "http://i.youku.com/i/UNDEwOTU4NDQxMg==/videos?spm=a2hzp.8253869.0.0",
-				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)番茄", ""));*/
+				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)番茄", ""));
 		projectList.add(new Project("荣蓉广场舞", "http://i.youku.com/i/UNTcyNzY5MDgw/videos?spm=a2hzp.8244740.0.0",
 				"D:\\soft\\FLV Downloader\\test\\"+"(专辑)广场舞大赛", ""));
+				*/
 		
-		
-		
+		projectList.add(new Project("舞灵美娜子", "http://i.youku.com/i/UMTMyNDY4OTE5Ng==/videos?spm=a2hzp.8253869.0.0",
+//				"J:\\vm\\热舞多组\\舞灵美娜子\\"+"(专辑)20180313003458舞灵美娜子的自频道-优酷视频", ""));
+				"J:\\vm\\热舞多组\\[舞灵美娜子 精品]", ""));
 		
 		
 		for(Project project :projectList){
