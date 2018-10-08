@@ -24,7 +24,9 @@ public interface ZhuatuService {
 	/**
 	 * 解析下一页的URL
 	 */
-	String nextPage(String html,ZhuatuConfig config) throws Exception;
+	default String nextPage(String html,ZhuatuConfig config) throws Exception{
+		return null;
+	};
 	
 	/**
 	 * 当前抓图 是否直接请求url，返回内容到html变量默认true
