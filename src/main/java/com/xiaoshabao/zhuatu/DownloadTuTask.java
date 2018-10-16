@@ -1,5 +1,7 @@
 package com.xiaoshabao.zhuatu;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.xiaoshabao.zhuatu.exception.ConnectException;
 import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.http.OkHttpManager;
@@ -11,6 +13,7 @@ public class DownloadTuTask implements Runnable {
 	private String url;
 	private String fileNamePath;
 	private HttpType httpType;
+	private ZhuatuConfig config;
 
 	/**
 	 * 下载文件
@@ -21,10 +24,11 @@ public class DownloadTuTask implements Runnable {
 	 *            E:\\test\\gm\\01.jpg
 	 * @param httpType 下载方式
 	 */
-	public DownloadTuTask(String url, String fileNamePath,HttpType httpType) {
+	public DownloadTuTask(String url, String fileNamePath,ZhuatuConfig config) {
 		this.url = url;
 		this.fileNamePath = fileNamePath;
-		this.httpType=httpType;
+		this.httpType=config.getDwonloadType();
+		this.config=config;
 	}
 
 	@Override
@@ -35,7 +39,11 @@ public class DownloadTuTask implements Runnable {
 				ZhuatuHttpManager.getInstance().download5(url, fileNamePath);
 				break;
 			case OKHTTP:
-				OkHttpManager.getInstance().download(url, fileNamePath,5);
+				if(StringUtils.isEmpty(config.getProxyIp())){
+					OkHttpManager.getInstance().download(url, fileNamePath,5);
+				}else{
+					ProxyOkHttp.getInstance(config.getProxyIp(), config.getProxyPort()).download(url, fileNamePath,2);
+				}
 				break;
 			default:
 				break;

@@ -1,5 +1,6 @@
 package com.xiaoshabao.zhuatu.core;
 
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -13,6 +14,7 @@ import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.ZhuatuUtil;
 import com.xiaoshabao.zhuatu.exception.ZhuatuException;
+import com.xiaoshabao.zhuatu.http.ProxyOkHttp;
 import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.able.HeavyAble;
@@ -116,13 +118,19 @@ public class ZhuatuCenter{
 		//解析当前层
 		String html = null;
 		if (config.isReqHtml()&&zhuatuService.isReqHtml()) {
-			// 访问url
-			html = ZhuatuHttpManager.getInstance().doHTTPAuto5(
-					ZhuatuUtil.formatUrl(pageInfo.getUrl(),config.getWebRoot()), config);
+			if(StringUtils.isEmpty(config.getProxyIp())){
+				// 访问url
+				html = ZhuatuHttpManager.getInstance().doHTTPAuto5(
+						ZhuatuUtil.formatUrl(pageInfo.getUrl(),config.getWebRoot()), config);
+			}else{
+				html=ProxyOkHttp.getInstance(config.getProxyIp(), config.getProxyPort())
+						.doGet(ZhuatuUtil.formatUrl(pageInfo.getUrl(),config.getWebRoot()),Charset.forName(config.getCharset()));
+			}
 			// 访问失败跳出
 			if (html == null) {
 				return;
 			}
+			
 		}
 
 		List<TuInfo> list = null;

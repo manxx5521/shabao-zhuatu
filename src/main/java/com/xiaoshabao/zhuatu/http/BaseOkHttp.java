@@ -2,6 +2,7 @@ package com.xiaoshabao.zhuatu.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,6 +70,32 @@ public class BaseOkHttp {
 		log.debug("url无法访问成功，url->{}",url);
 		return false;
 		
+	}
+	/**
+	 * 尝试访问url查看是否可以访问成功
+	 * @param url
+	 * @return true成功访问，false访问失败
+	 */
+	public String doGet(String url) {
+		return doGet(url, Charset.defaultCharset());
+	}
+	/**
+	 * 尝试访问url查看是否可以访问成功
+	 * @param url
+	 * @return true成功访问，false访问失败
+	 */
+	public String doGet(String url,Charset charset ) {
+		try {
+			Request request = new Request.Builder().url(url).build();
+			Response response = getClient().newCall(request).execute();
+		    if (response.isSuccessful()||response.code()==404) {
+		    	return new String(response.body().bytes(),charset);
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		log.debug("url无法访问成功，url->{}",url);
+		return null;
 	}
 	
 	protected OkHttpClient getClient() {

@@ -172,9 +172,8 @@ public class DownloadZhuatuImpl extends Decorator {
 				
 				log.info("装载下载链接：" + fileNameUrl);
 				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot())
-						,config.getSavePath() + File.separator
-							+ZhuatuUtil.formatTitleName(info.getTitle()) + File.separator + fileName
-						,config.getDwonloadType());
+						,config.getSavePath() + File.separator +ZhuatuUtil.formatTitleName(info.getTitle()) + File.separator + fileName
+						,config);
 				ZhuatuDownloadPool.getInstance().execute(myTask);
 			}
 		}
