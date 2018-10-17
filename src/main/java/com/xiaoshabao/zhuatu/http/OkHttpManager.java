@@ -13,7 +13,7 @@ public class OkHttpManager extends BaseOkHttp{
 
 	public static OkHttpManager getInstance() {
 		if (instance == null) {
-			synchronized (ZhuatuHttpManager.class) {
+			synchronized (OkHttpManager.class) {
 				if (instance == null) {
 					instance = new OkHttpManager();
 				}

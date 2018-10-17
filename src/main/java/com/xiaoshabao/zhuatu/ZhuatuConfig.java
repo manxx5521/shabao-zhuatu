@@ -1,9 +1,11 @@
 package com.xiaoshabao.zhuatu;
 
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
+import com.xiaoshabao.zhuatu.http.HttpAble;
 import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.http.OkHttpManager;
 
@@ -11,7 +13,7 @@ public class ZhuatuConfig {
 	/**初始url*/
 	private String url;
 
-	private String charset = "UTF-8";
+	private Charset charset = Charset.defaultCharset();
 	/**
 	 * 设置保存路径
 	 */
@@ -20,7 +22,7 @@ public class ZhuatuConfig {
 	/**扩展保存目录，只做项目查询，不保存数据*/
 	private Set<String> extSavePath=new HashSet<String>();
 
-	private RequestMethod method = RequestMethod.GET;
+	private HttpAble.Method method = HttpAble.Method.GET;
 	/**
 	 * 是否直接请求url，返回内容到html变量默认true（对于服务所有请求）
 	 * @param reqHtml
@@ -91,7 +93,7 @@ public class ZhuatuConfig {
 	 * @param charset UTF-8
 	 */
 	public void setCharset(String charset) {
-		this.charset = charset;
+		this.charset = Charset.forName(charset);
 	}
 
 	/**
@@ -108,7 +110,7 @@ public class ZhuatuConfig {
 	 * 访问类型post或者get
 	 * @param method
 	 */
-	public void setMethod(RequestMethod method) {
+	public void setMethod(HttpAble.Method method) {
 		this.method = method;
 	}
 	/**
@@ -121,8 +123,12 @@ public class ZhuatuConfig {
 
 
 
-	public String getCharset() {
+	public Charset getCharset() {
 		return charset;
+	}
+	
+	public String getCharsetString() {
+		return charset.name();
 	}
 
 
@@ -136,7 +142,7 @@ public class ZhuatuConfig {
 	}
 
 
-	public RequestMethod getMethod() {
+	public HttpAble.Method getMethod() {
 		return method;
 	}
 

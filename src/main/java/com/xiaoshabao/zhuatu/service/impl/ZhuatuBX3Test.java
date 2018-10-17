@@ -39,7 +39,7 @@ public class ZhuatuBX3Test {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
 				List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList list = parser.parse(new HasAttributeFilter("id", "list"));
 				Node body = list.elementAt(0);
 				body.accept(new NodeVisitor() {
@@ -71,7 +71,7 @@ public class ZhuatuBX3Test {
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
 				List<TuInfo> result = new LinkedList<TuInfo>();
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 				NodeList list = parser.parse(new HasAttributeFilter("id", "zjneirong"));
 				String content = list.elementAt(0).getChildren().toHtml();
 				try {

@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.RequestMethod;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.core.ZhuatuFactory;
+import com.xiaoshabao.zhuatu.http.HttpAble;
 import com.xiaoshabao.zhuatu.service.ZhuatuDownloadService;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 import com.xiaoshabao.zhuatu.service.ZhuatuWaitService;
@@ -49,7 +49,7 @@ public class ZhuatuFengniaoTest {
 
 			@Override
 			public List<TuInfo> parser(String html, TuInfo pageInfo, ZhuatuConfig config) throws ParserException {
-				Parser parser = Parser.createParser(html, config.getCharset());
+				Parser parser = Parser.createParser(html, config.getCharsetString());
 
 				NodeList list = parser.parse(new TagNameFilter("span"));
 				for (Node node : list.toNodeArray()) {
@@ -141,7 +141,7 @@ public class ZhuatuFengniaoTest {
 			}
 		});
 		ZhuatuConfig config = new ZhuatuConfig();
-		config.setMethod(RequestMethod.POST);
+		config.setMethod(HttpAble.Method.POST);
 		config.setSavePath("E:\\test\\test\\fengniao");
 		config.setDownlaodUrlParser(url->{
 			return url.substring(0, url.indexOf("?"));

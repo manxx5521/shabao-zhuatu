@@ -17,7 +17,7 @@ public class ProxyOkHttp extends BaseOkHttp{
 
 	public static ProxyOkHttp getInstance(String host,Integer port) {
 		if (instance == null) {
-			synchronized (ZhuatuHttpManager.class) {
+			synchronized (ProxyOkHttp.class) {
 				if (instance == null) {
 					instance = new ProxyOkHttp(host,port);
 				}
