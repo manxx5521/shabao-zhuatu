@@ -3,6 +3,7 @@ package com.xiaoshabao.zhuatu.core;
 import java.util.List;
 
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.ZhuatuUtil;
 import com.xiaoshabao.zhuatu.service.ZhuatuService;
 
 /**
@@ -28,7 +29,7 @@ public class ZhuatuFactory {
 	}
 
 	public static void start(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
-		config.setUrl(url);
+		config.setUrl(ZhuatuUtil.formatUrl(url));
 		ZhuatuCenter center=new ZhuatuCenter(config,zhuatuServices);
 		center.run();
 	}

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ZhuatuUtil {
 	/**
 	 * 去除可能存在的特殊字符
@@ -60,6 +62,9 @@ public class ZhuatuUtil {
 	 * 去除可能存在的特殊字符
 	 */
 	public static String formatUrl(String url) {
+		if(StringUtils.isEmpty(url)) {
+			return url;
+		}
 		url=url.replace("\r","");
 		url=url.replace("\n","");
 		return url;
@@ -72,7 +77,10 @@ public class ZhuatuUtil {
 	 * @return 返回完整路径 http://tu.fengniao.com/1111
 	 */
 	public static String formatUrl(String url,String webRoot) {
-		formatUrl(url);
+		if(StringUtils.isEmpty(url)) {
+			return url;
+		}
+		url=formatUrl(url);
 		if(!url.startsWith("http")){
 			if(url.startsWith("/")){
 				url=url.substring(1,url.length());
@@ -81,6 +89,12 @@ public class ZhuatuUtil {
 		}
 		
 		return url;
+	}
+	
+	public static void formatInfo(TuInfo info,String webRoot) {
+		//更正url正确性
+		info.setUrl(ZhuatuUtil.formatUrl(info.getUrl(),webRoot));
+		info.setTitle(ZhuatuUtil.formatTitleName(info.getTitle()));
 	}
 
 	/**

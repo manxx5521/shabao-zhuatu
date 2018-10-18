@@ -16,7 +16,7 @@ public class TuInfo implements Serializable {
 		this.url = url;
 		this.title = title;
 	}
-
+	
 	public void clear() {
 		this.url = null;
 		this.title = null;
