@@ -125,7 +125,7 @@ public class ZhuatuCenter{
 			}else{
 				httAble=ProxyOkHttp.getInstance(config.getProxyIp(), config.getProxyPort());
 			}
-			httAble.doUrl(pageInfo.getUrl(), config.getMethod(), config.getCharset(), 3);
+			html=httAble.doUrl(pageInfo.getUrl(), config.getMethod(), config.getCharset(), 3);
 			// 访问失败跳出
 			if (html == null) {
 				return;

@@ -19,10 +19,12 @@ public class CpCreateDir {
 		for(File file:root.listFiles()){
 			File newFile=new File(todir+"\\"+file.getName());
 			if(!newFile.exists()){
+				System.out.println("创建："+newFile.getName());
 				newFile.mkdirs();
 			}
 			
 		}
+		System.out.println("创建成功！！！！！！！！");
 	}
 
 }
