@@ -2,6 +2,7 @@ package com.xiaoshabao.zhuatu.http;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
@@ -33,7 +34,7 @@ public class BaseOkHttp implements HttpAble{
 	public String doPost(String url, Charset charset) throws IOException {
 		return doGet(url,charset);
 	}
-	public boolean download(String url, String pathName) {
+	public boolean download(String url, String pathName) throws SocketTimeoutException {
 		try {
 			Request request = new Request.Builder().url(url).build();
 			Response response = getClient().newCall(request).execute();
@@ -48,7 +49,9 @@ public class BaseOkHttp implements HttpAble{
 		    		log.error("url访问失败返回识别码 " + response+"\n\r url->"+url);
 		    	}
 		    }
-		} catch (IOException e) {
+		}catch(SocketTimeoutException e){
+			throw e;
+		}catch (IOException e) {
 			log.error("url访问失败 ",e);
 		}
 		return false;

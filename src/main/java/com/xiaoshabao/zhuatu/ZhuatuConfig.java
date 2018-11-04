@@ -70,6 +70,11 @@ public class ZhuatuConfig {
 	 * 代理端口
 	 */
 	private int proxyPort;
+	
+	/**
+	 * 需要重新检查的项目
+	 */
+	private Set<String> checkProjects=new HashSet<String>();
 
 	/**
 	 * 下载链接解析函数
@@ -277,6 +282,22 @@ public class ZhuatuConfig {
 	public ZhuatuConfig addExtSavePath(String path) {
 		this.extSavePath.add(path);
 		return this;
+	}
+	
+	/**
+	 * 添加需要重新检查下载的项目
+	 * @param name
+	 * @return
+	 */
+	public ZhuatuConfig addCheckPoject(String... names){
+		for(String name:names){
+			checkProjects.add(name);
+		}
+		return this;
+	}
+	
+	public Set<String> getCheckProjects() {
+		return checkProjects;
 	}
 
 

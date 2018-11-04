@@ -141,7 +141,7 @@ public class ZhuatuCenter{
 		}
 		
 		//解析下一层
-		if(list!=null&&list.size() > 1){
+		if(list!=null&&list.size() > 0){
 			Iterator<TuInfo> iterator = list.iterator();
 			// 链表用迭代器
 			ma:

@@ -51,7 +51,7 @@ public class ZhuatuHttpManager implements HttpAble{
 	
 
 	@Override
-	public boolean download(String url, String pathName) {
+	public boolean download(String url, String pathName) throws IOException {
 		
 		
 		try {
@@ -83,6 +83,9 @@ public class ZhuatuHttpManager implements HttpAble{
 							byte[] image = IOUtils.toByteArray(instream);
 							FileUtils.writeByteArrayToFile(new File(pathName), image);
 							return true;
+						} catch (IOException e) {
+							log.error("写入文件时发生错误：->{}",url);
+							return false;
 						}
 					}else {
 						log.error("未能正常下载文件 url返回实体为空");
@@ -90,9 +93,9 @@ public class ZhuatuHttpManager implements HttpAble{
 				} else {
 					log.error("未能正常返回 下载文件结果，返回状态{}" , statusCode);
 				}
-			} catch (IOException e) {
+			}/* catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 		} catch (MalformedURLException e) {
 			log.error("下载url存在格式问题：->{}",url);
 			e.printStackTrace();

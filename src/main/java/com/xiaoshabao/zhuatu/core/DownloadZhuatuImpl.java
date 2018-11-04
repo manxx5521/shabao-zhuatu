@@ -110,7 +110,9 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
-				if (!DataCache.getInstance().addProject(name)) {
+				if (config.getCheckProjects().contains(name)) {
+					log.warn("进行重新 检查下载---> {}", info.getTitle());
+				}else if(!DataCache.getInstance().addProject(name)) {
 					log.warn("项目 {} 未下载（项目已经存在）。", info.getTitle());
 					return false;
 				}
@@ -161,6 +163,8 @@ public class DownloadZhuatuImpl extends Decorator {
 				}
 				String fileName = ZhuatuUtil.formatTitleName(fileNameUrl.substring(fileNameUrl.lastIndexOf("/") + 1, fileNameUrl.length()));
 				
+				
+				
 				String downloadUrl=parserDowloadUrl(info.getUrl());
 				//判断是否是不下载url
 				if (config.getNoDownloadName().size() > 0) {
@@ -170,10 +174,18 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
+				String saveName=config.getSavePath() + File.separator +ZhuatuUtil.formatTitleName(info.getTitle()) + File.separator + fileName;
+				
+				if (config.getCheckProjects().contains(info.getTitle())) {
+					File checkFile=new File(saveName);
+					if(checkFile.exists()){
+						log.info("文件{}已经存在略过。",fileName);
+						return false;
+					}
+				}
+				
 				log.info("装载下载链接：" + fileNameUrl);
-				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot())
-						,config.getSavePath() + File.separator +ZhuatuUtil.formatTitleName(info.getTitle()) + File.separator + fileName
-						,config);
+				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot()),saveName,config);
 				ZhuatuDownloadPool.getInstance().execute(myTask);
 			}
 		}

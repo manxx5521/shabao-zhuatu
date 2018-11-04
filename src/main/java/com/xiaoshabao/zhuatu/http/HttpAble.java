@@ -30,7 +30,7 @@ public interface HttpAble {
 	 * @return 正常访问时返回数据字符串，失败时返回 null
 	 */
 	default String doUrl(String url, Method method, Charset charset, int count) {
-		return new RetryFactory<String, String>(url, "访问URL").setCount(count).execute(tempUrl -> {
+		return new RetryFactory<String, String>(url, "访问URL->"+url).setCount(count).execute(tempUrl -> {
 			switch (method) {
 			case POST:
 				return doPost(tempUrl, charset);
@@ -154,7 +154,21 @@ public interface HttpAble {
 	 * @param pathName 保存文件名
 	 * @return 下载成功true
 	 */
-	boolean download(String url, String pathName);
+	default boolean downloadA(String url, String pathName){
+		try {
+			return download(url,pathName);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * 下载文件文件到指定目录
+	 * @param url
+	 * @param pathName 保存文件名
+	 * @return 下载成功true
+	 */
+	boolean download(String url, String pathName) throws IOException;
 	
 	
 	
