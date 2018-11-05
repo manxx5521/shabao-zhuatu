@@ -24,8 +24,8 @@ public class Decorator implements ZhuatuParser {
 	}
 
 	@Override
-	public void beforPageProjet(ZhuatuService service, TuInfo info,int index) {
-		parser.beforPageProjet(service, info,index);
+	public boolean beforPageProjet(ZhuatuService service, TuInfo info,int index) {
+		return parser.beforPageProjet(service, info,index);
 	}
 
 	@Override

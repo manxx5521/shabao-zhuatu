@@ -113,7 +113,9 @@ public class ZhuatuCenter{
 	 */
 	public void parserPage(ZhuatuService zhuatuService, TuInfo pageInfo,
 			int idx, boolean newProject) {
-		parser.beforPageProjet(zhuatuService, pageInfo,idx);
+		if(!parser.beforPageProjet(zhuatuService, pageInfo,idx)){
+			return;
+		}
 		
 		//解析当前层
 		String html = null;

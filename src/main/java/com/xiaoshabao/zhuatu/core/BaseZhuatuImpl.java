@@ -14,7 +14,8 @@ public class BaseZhuatuImpl implements ZhuatuParser {
 	}
 
 	@Override
-	public void beforPageProjet(ZhuatuService service, TuInfo info, int index) {
+	public boolean beforPageProjet(ZhuatuService service, TuInfo info, int index) {
+		return true;
 	}
 
 	@Override

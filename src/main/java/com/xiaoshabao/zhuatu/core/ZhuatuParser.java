@@ -17,8 +17,9 @@ public interface ZhuatuParser {
 	 * @param service
 	 * @param info
 	 *            解析出的项目（列表中的一个）
+	 * @return 是否继续执行，继续true
 	 */
-	void beforPageProjet(ZhuatuService service,TuInfo info,int index);
+	boolean beforPageProjet(ZhuatuService service,TuInfo info,int index);
 	/**
 	 * 对当前页解析以及下层内容解析完成后的扩展
 	 * @param service

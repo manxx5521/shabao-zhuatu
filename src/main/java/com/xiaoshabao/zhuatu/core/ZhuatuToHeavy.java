@@ -30,8 +30,11 @@ public class ZhuatuToHeavy extends Decorator{
 	}
 
 	@Override
-	public void beforPageProjet(ZhuatuService service, TuInfo info,int index) {
-		super.beforPageProjet(service, info,index);
+	public boolean beforPageProjet(ZhuatuService service, TuInfo info,int index) {
+		if(!super.beforPageProjet(service, info,index)){
+			return false;
+		}
+		
 		List<String> pages=pageMap.get(index);
 		String url=info.getUrl();
 		if(pages==null){
@@ -42,8 +45,9 @@ public class ZhuatuToHeavy extends Decorator{
 			pages.add(url);
 		}else{
 			log.info("{}已经解析过了",info.getTitle()==null?"":info.getTitle());
-			return;
+			return false;
 		}
+		return true;
 		
 	}
 	
