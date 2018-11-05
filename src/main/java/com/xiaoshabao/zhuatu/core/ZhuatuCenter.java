@@ -57,6 +57,7 @@ public class ZhuatuCenter{
 				});
 			}
 			latch.await();
+			parser.afterRuning();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -78,6 +79,8 @@ public class ZhuatuCenter{
 						parser=new ZhuatuToHeavy(parser);
 						heavy=true;
 					}
+				}
+				for(ZhuatuService serivce:serviceList){
 					if(serivce instanceof ZhuatuDownloadAble&&download!=true){
 						parser=new DownloadZhuatuImpl(parser);
 						download=true;

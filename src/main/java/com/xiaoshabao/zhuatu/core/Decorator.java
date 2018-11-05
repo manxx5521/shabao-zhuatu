@@ -14,9 +14,9 @@ public class Decorator implements ZhuatuParser {
 		this.parser=parser;
 	}
 
-	public ZhuatuParser getParser() {
+	/*public ZhuatuParser getParser() {
 		return parser;
-	}
+	}*/
 
 	@Override
 	public void init(List<ZhuatuService> serviceList,ZhuatuConfig config) {

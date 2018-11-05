@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -30,6 +32,8 @@ public class DownloadZhuatuImpl extends Decorator {
 	protected boolean isNeedPool = false;
 	
 	private ZhuatuConfig config;
+	private final static int taskTime=5;
+	private AtomicInteger time=new AtomicInteger(taskTime);
 	
 	public DownloadZhuatuImpl(ZhuatuParser parser) {
 		super(parser);
@@ -73,6 +77,23 @@ public class DownloadZhuatuImpl extends Decorator {
 		
 		if (service instanceof ZhuatuDownloadAble) {
 			ZhuatuDownloadPool.init();
+			
+			//启动一个定时线程输出 线程池状态
+			CompletableFuture.runAsync(() -> {
+				while(true){
+					try {
+						Thread.sleep(1000);
+						if(time.get()<1){
+							log.info(info());
+						}else{
+							time.getAndDecrement();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+			});
 		}
 	}
 	
@@ -184,15 +205,13 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
-				log.info("装载下载链接：" + fileNameUrl);
+				log.info("装载下载链接：{};{}" ,fileNameUrl,info());
 				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot()),saveName,config);
 				ZhuatuDownloadPool.getInstance().execute(myTask);
 			}
 		}
 		return true;
 	}
-
-
 	
 	
 	//当前项目解析完成后
@@ -211,8 +230,7 @@ public class DownloadZhuatuImpl extends Decorator {
 
 	@Override
 	public void afterRuning() {
-		getParser().afterRuning();
-		
+		super.afterRuning();
 		ZhuatuDownloadPool.getInstance().shutdown();
 	}
 
@@ -227,6 +245,13 @@ public class DownloadZhuatuImpl extends Decorator {
 			url=config.getDownlaodUrlParser().apply(url);
 		}
 		return url;
+	}
+	
+	private String info(){
+		time.set(taskTime);
+		StringBuilder sb=new StringBuilder();
+		sb.append("{活跃下载：").append(ZhuatuDownloadPool.getInstance().getActiveCount()).append("}");
+		return sb.toString(); 
 	}
 	
 }

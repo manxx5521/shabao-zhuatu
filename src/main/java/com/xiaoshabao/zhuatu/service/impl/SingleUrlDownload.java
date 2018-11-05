@@ -8,7 +8,7 @@ public class SingleUrlDownload {
 	
 	@Test
 	public void test(){
-		String url="http://s6tu.com/images/2018/08/11/2017-08-03-220242.md.jpg";
+		String url="http://***.com/images/2018/08/11/2017-08-03-220242.md.jpg";
 		
 		String fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
 		try {

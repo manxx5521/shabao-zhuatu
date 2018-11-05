@@ -60,7 +60,7 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 			}
 		}
 	}
-
+	
 	/**
 	 * 等待活跃的进程数小于5
 	 */
