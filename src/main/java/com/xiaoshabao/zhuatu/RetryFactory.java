@@ -122,8 +122,8 @@ public class RetryFactory<T, R> {
 	 * @param Clazz Exception.class
 	 * @param number
 	 */
-	public RetryFactory<T, R> addExceptionCount(Class<?> Clazz,int number){
-		exceptionCount.put(Clazz, number);
+	public RetryFactory<T, R> addExceptionCount(Class<?> clazz,int number){
+		exceptionCount.put(clazz, number);
 		return this;
 	}
 

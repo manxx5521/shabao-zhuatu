@@ -32,8 +32,8 @@ public class DownloadZhuatuImpl extends Decorator {
 	protected boolean isNeedPool = false;
 	
 	private ZhuatuConfig config;
-	private final static int taskTime=5;
-	private AtomicInteger time=new AtomicInteger(taskTime);
+	private final static int TASK_TIME=5;
+	private AtomicInteger time=new AtomicInteger(TASK_TIME);
 	
 	public DownloadZhuatuImpl(ZhuatuParser parser) {
 		super(parser);
@@ -248,7 +248,7 @@ public class DownloadZhuatuImpl extends Decorator {
 	}
 	
 	private String info(){
-		time.set(taskTime);
+		time.set(TASK_TIME);
 		StringBuilder sb=new StringBuilder();
 		sb.append("{活跃下载：").append(ZhuatuDownloadPool.getInstance().getActiveCount()).append("}");
 		return sb.toString(); 

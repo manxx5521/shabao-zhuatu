@@ -34,6 +34,8 @@ public class BaseOkHttp implements HttpAble{
 	public String doPost(String url, Charset charset) throws IOException {
 		return doGet(url,charset);
 	}
+	
+	@Override
 	public boolean download(String url, String pathName) throws SocketTimeoutException {
 		try {
 			Request request = new Request.Builder().url(url).build();
