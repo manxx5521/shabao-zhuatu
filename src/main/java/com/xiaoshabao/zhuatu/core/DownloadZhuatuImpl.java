@@ -120,7 +120,7 @@ public class DownloadZhuatuImpl extends Decorator {
 			// 如果是项目服务，进行项目比对排重
 			if (service instanceof ProjectAble) {
 				
-				String name=ZhuatuUtil.formatTitleName(info.getTitle());
+				String name=info.getTitle();
 				
 				//判断是否是活跃程序
 				synchronized (DownloadZhuatuImpl.class) {
@@ -132,9 +132,9 @@ public class DownloadZhuatuImpl extends Decorator {
 				}
 				
 				if (config.getCheckProjects().contains(name)) {
-					log.warn("进行重新 检查下载---> {}", info.getTitle());
+					log.warn("进行重新 检查下载---> {}",name);
 				}else if(!DataCache.getInstance().addProject(name)) {
-					log.warn("项目 {} 未下载（项目已经存在）。", info.getTitle());
+					log.warn("项目 {} 未下载（项目已经存在）。", name);
 					return false;
 				}
 				// 如果有优先项目，先执行优先项目，其他跳过
@@ -162,7 +162,7 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
-				log.warn("**开始下载项目 {}。(目录：{})***********",ZhuatuUtil.formatTitleName(info.getTitle()),config.getSavePath());
+				log.warn("**开始下载项目 {}。(目录：{})***********",info.getTitle(),config.getSavePath());
 			}
 
 			// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
@@ -195,7 +195,7 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
-				String saveName=config.getSavePath() + File.separator +ZhuatuUtil.formatTitleName(info.getTitle()) + File.separator + fileName;
+				String saveName=config.getSavePath() + File.separator +info.getTitle() + File.separator + fileName;
 				
 				if (config.getCheckProjects().contains(info.getTitle())) {
 					File checkFile=new File(saveName);
@@ -220,7 +220,7 @@ public class DownloadZhuatuImpl extends Decorator {
 		super.afterPageProjet(service, info);
 		
 		if (service instanceof ProjectAble) {
-			DataCache.getInstance().putActiveToProject(ZhuatuUtil.formatTitleName(info.getTitle()));
+			DataCache.getInstance().putActiveToProject(info.getTitle());
 		}
 	}
 
