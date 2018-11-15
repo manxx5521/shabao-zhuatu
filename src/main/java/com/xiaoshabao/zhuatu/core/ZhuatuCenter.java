@@ -1,5 +1,6 @@
 package com.xiaoshabao.zhuatu.core;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -16,31 +17,42 @@ import com.xiaoshabao.zhuatu.exception.ZhuatuException;
 import com.xiaoshabao.zhuatu.http.HttpAble;
 import com.xiaoshabao.zhuatu.http.ProxyOkHttp;
 import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
-import com.xiaoshabao.zhuatu.service.ZhuatuService;
-import com.xiaoshabao.zhuatu.service.able.HeavyAble;
-import com.xiaoshabao.zhuatu.service.able.ZhuatuDownloadAble;
 
 public class ZhuatuCenter{
-	private final static Logger log = LoggerFactory
-			.getLogger(ZhuatuCenter.class);
-
-	private ZhuatuParser parser;
-	private List<ZhuatuService> serviceList;
+	private final static Logger log = LoggerFactory.getLogger(ZhuatuCenter.class);
+	private List<Service> serviceList=new ArrayList<Service>();
 	private ZhuatuConfig config;
 	
-	public ZhuatuCenter(ZhuatuConfig config,
-			List<ZhuatuService> serviceList) {
-		this.serviceList = serviceList;
-		this.config = config;
+	
+	
+	private ZhuatuParser parser;
+	
+	
+	
+	public ZhuatuCenter() {
+		
 	}
-	public ZhuatuCenter(ZhuatuParser parser, ZhuatuConfig config,
-			List<ZhuatuService> serviceList) {
-		this.parser = parser;
-		this.serviceList = serviceList;
-		this.config = config;
+	
+	/**
+	 * 创建配置信息
+	 * @return
+	 */
+	public ZhuatuConfig createConfig() {
+		config=new ZhuatuConfig(this);
+		return config;
 	}
-
-	public void run() {
+	
+	/**
+	 * 创建一层抓图服务
+	 * @return
+	 */
+	public Service createService() {
+		Service service=new Service(this);
+		serviceList.add(service);
+		return service;
+	}
+	
+	public void start() {
 		log.info("初始化配置....");
 		init();
 		log.info("初始化完成");
@@ -52,7 +64,7 @@ public class ZhuatuCenter{
 					config.getThreadCount());
 			for (int i = 0; i < config.getThreadCount(); i++) {
 				CompletableFuture.runAsync(() -> {
-					parserPage(this.serviceList.get(0),info, 0, true);
+					parserPage(serviceList.get(0),info, 0, true);
 					latch.countDown();
 				});
 			}
@@ -66,27 +78,22 @@ public class ZhuatuCenter{
 	public void init() {
 		try {
 			String url = config.getUrl();
-			if (StringUtils.isEmpty(url) || serviceList == null
-					|| serviceList.size() < 1) {
+			if (StringUtils.isEmpty(url) || serviceList.size() < 1) {
 				throw new ZhuatuException("错误的初始化信息，没有url或者为设置抓取服务实现");
 			}
 			
+			//预先加载策略
 			if(parser==null){
 				parser=new BaseZhuatuImpl();
-				boolean heavy=false,download=false;
-				for(ZhuatuService serivce:serviceList){
-					if(serivce instanceof HeavyAble&&heavy!=true){
-						parser=new ZhuatuToHeavy(parser);
-						heavy=true;
-					}
+				if(config.isHeavyURL()) {
+					parser=new ZhuatuToHeavy(parser);
 				}
-				for(ZhuatuService serivce:serviceList){
-					if(serivce instanceof ZhuatuDownloadAble&&download!=true){
+				for(Service serivce:serviceList){
+					if(serivce.isDownloadUrl()){
 						parser=new DownloadZhuatuImpl(parser);
-						download=true;
+						break;
 					}
 				}
-				
 			}
 
 			// 预先加载服务
@@ -114,33 +121,28 @@ public class ZhuatuCenter{
 	 * @param newProject
 	 *            是否是新项目（如果false表示是下一页解析）
 	 */
-	public void parserPage(ZhuatuService zhuatuService, TuInfo pageInfo,
+	public void parserPage(Service service, TuInfo pageInfo,
 			int idx, boolean newProject) {
-		if(!parser.beforPageProjet(zhuatuService, pageInfo,idx)){
+		if(!parser.beforPageProjet(service, pageInfo,idx)){
 			return;
 		}
 		
-		//解析当前层
+		List<TuInfo> list = null;
 		String html = null;
-		if (config.isReqHtml()&&zhuatuService.isReqHtml()) {
-			HttpAble httAble=null;
-			if(StringUtils.isEmpty(config.getProxyIp())){
-				// 访问url
-				httAble = ZhuatuHttpManager.getInstance();
-			}else{
-				httAble=ProxyOkHttp.getInstance(config.getProxyIp(), config.getProxyPort());
-			}
-			html=httAble.doUrl(pageInfo.getUrl(), config.getMethod(), config.getCharset(), 3);
-			// 访问失败跳出
-			if (html == null) {
-				return;
+		try {
+			if (service.getParserUrlFunction() != null) {
+				list = service.getParserUrlFunction().parser(pageInfo.getUrl(), pageInfo, config);
 			}
 			
-		}
-
-		List<TuInfo> list = null;
-		try {
-			list = zhuatuService.parser(html, pageInfo, config);
+			if (service.getParserFunction() != null) {
+				html=this.getUrl(pageInfo.getUrl());
+				// 访问失败跳出
+				if (html == null) {
+					return;
+				}
+				list = service.getParserFunction().parser(html, pageInfo, config);
+			}
+		
 		} catch (Exception e) {
 			log.error("解析错误", e);
 		}
@@ -163,7 +165,7 @@ public class ZhuatuCenter{
 				}
 				
 				// 扩展操作
-				if (!parser.doReturnProject(zhuatuService, tuInfo)) {
+				if (!parser.doReturnProject(service, tuInfo)) {
 					continue ma;
 				}
 
@@ -174,7 +176,7 @@ public class ZhuatuCenter{
 				}
 				
 				// 结束扩展
-				parser.afterPageProjet(zhuatuService, tuInfo);
+				parser.afterPageProjet(service, tuInfo);
 			}
 		}else{
 			log.error("url解析内容 未能正常返回直接跳过,进行下一页  url->{}", pageInfo.getUrl());
@@ -183,7 +185,10 @@ public class ZhuatuCenter{
 		//解析当前层下一页
 		String nextUrl = null;
 		try {
-			nextUrl = zhuatuService.nextPage(html, config);
+			if(html==null) {
+				html=this.getUrl(pageInfo.getUrl());
+			}
+			nextUrl = service.getNextFunction().nextPage(html, config);
 		} catch (Exception e) {
 			log.warn("url解析下一页时错误。  url->{}", pageInfo.getUrl());
 		}
@@ -191,9 +196,23 @@ public class ZhuatuCenter{
 			TuInfo tuInfo = new TuInfo();
 			tuInfo.setUrl(nextUrl);
 			tuInfo.setTitle(pageInfo.getTitle());
-			parserPage(zhuatuService,tuInfo, idx, false);// 下一页
+			parserPage(service,tuInfo, idx, false);// 下一页
 		}
 		
 	}
+	
+	private String getUrl(String url) {
+		HttpAble httAble=null;
+		if(StringUtils.isEmpty(config.getProxyIp())){
+			// 访问url
+			httAble = ZhuatuHttpManager.getInstance();
+		}else{
+			httAble=ProxyOkHttp.getInstance(config.getProxyIp(), config.getProxyPort());
+		}
+		return httAble.doUrl(url, config.getMethod(), config.getCharset(), 3);
+	}
+	
+	
+	
 
 }

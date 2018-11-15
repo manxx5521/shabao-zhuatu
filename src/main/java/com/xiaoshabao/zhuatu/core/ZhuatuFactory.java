@@ -30,7 +30,7 @@ public class ZhuatuFactory {
 
 	public static void start(String url, List<ZhuatuService> zhuatuServices, ZhuatuConfig config) {
 		config.setUrl(ZhuatuUtil.formatUrl(url));
-		ZhuatuCenter center=new ZhuatuCenter(config,zhuatuServices);
-		center.run();
+//		ZhuatuCenter center=new ZhuatuCenter(config,zhuatuServices);
+//		center.start();
 	}
 }

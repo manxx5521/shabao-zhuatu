@@ -18,8 +18,6 @@ import com.xiaoshabao.zhuatu.TuInfo;
 import com.xiaoshabao.zhuatu.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.ZhuatuDownloadPool;
 import com.xiaoshabao.zhuatu.ZhuatuUtil;
-import com.xiaoshabao.zhuatu.service.ZhuatuService;
-import com.xiaoshabao.zhuatu.service.able.LoadFileAble;
 import com.xiaoshabao.zhuatu.service.able.ProjectAble;
 import com.xiaoshabao.zhuatu.service.able.ZhuatuDownloadAble;
 import com.xiaoshabao.zhuatu.service.able.ZhuatuWaitAble;
@@ -41,62 +39,48 @@ public class DownloadZhuatuImpl extends Decorator {
 	
 
 	@Override
-	public void init(List<ZhuatuService> serviceList,ZhuatuConfig config) {
-		super.init(serviceList,config);
-		
-		this.config=config;
-		for(ZhuatuService service:serviceList){
-			initBeforSerivce(service);
-		}
-	}
-
-	/**
-	 * 初始化服务列表
-	 */
-	protected void initBeforSerivce(ZhuatuService service) {
-		if (service instanceof ZhuatuDownloadAble) {
-			isNeedPool = true;
-		}
+	public void init(List<Service> serviceList, ZhuatuConfig config) {
+		super.init(serviceList, config);
+		this.config = config;
 
 		// 加载本地文件
-		if (service instanceof LoadFileAble) {
+		if (config.isLoadLocalFile()) {
 			if (StringUtils.isEmpty(this.config.getSavePath())) {
 				log.error("启用了加载本地文件接口，但是没有配置本地文件目录");
 				return;
-			} 
+			}
 			log.debug("开始加载本地目录****");
 			log.debug("-----");
-			//添加保存目录
+			// 添加保存目录
 			addProjectPath(config.getSavePath());
-			//添加查询目录
-			for(String path:config.getExtSavePath()) {
+			// 添加查询目录
+			for (String path : config.getExtSavePath()) {
 				addProjectPath(path);
 			}
 			log.debug("结束加载本地目录****");
 		}
-		
-		if (service instanceof ZhuatuDownloadAble) {
-			ZhuatuDownloadPool.init();
-			
-			//启动一个定时线程输出 线程池状态
-			CompletableFuture.runAsync(() -> {
-				while(true){
-					try {
-						Thread.sleep(1000);
-						if(time.get()<1){
-							log.info(info());
-						}else{
-							time.getAndDecrement();
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+
+		ZhuatuDownloadPool.init();
+
+		// 启动一个日志定时线程输出 线程池状态
+		CompletableFuture.runAsync(() -> {
+			while (true) {
+				try {
+					Thread.sleep(1000);
+					if (time.get() < 1) {
+						log.info(info());
+					} else {
+						time.getAndDecrement();
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				
-			});
-		}
+			}
+
+		});
+
 	}
-	
+
 	/**向projects添加已经下载的目录*/
 	private void addProjectPath(String root) {
 		File path = new File(root);
@@ -115,7 +99,7 @@ public class DownloadZhuatuImpl extends Decorator {
 	 * 解析当前页项目
 	 */
 	@Override
-	public boolean doReturnProject(ZhuatuService service, TuInfo info) {
+	public boolean doReturnProject(Service service, TuInfo info) {
 		if( super.doReturnProject(service, info)){
 			// 如果是项目服务，进行项目比对排重
 			if (service instanceof ProjectAble) {
@@ -216,7 +200,7 @@ public class DownloadZhuatuImpl extends Decorator {
 	
 	//当前项目解析完成后
 	@Override
-	public void afterPageProjet(ZhuatuService service, TuInfo info) {
+	public void afterPageProjet(Service service,TuInfo info) {
 		super.afterPageProjet(service, info);
 		
 		if (service instanceof ProjectAble) {

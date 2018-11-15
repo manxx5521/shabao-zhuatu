@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.service.ZhuatuService;
 
 
 
@@ -30,7 +29,7 @@ public class ZhuatuToHeavy extends Decorator{
 	}
 
 	@Override
-	public boolean beforPageProjet(ZhuatuService service, TuInfo info,int index) {
+	public boolean beforPageProjet(Service service, TuInfo info,int index) {
 		if(!super.beforPageProjet(service, info,index)){
 			return false;
 		}
@@ -56,8 +55,7 @@ public class ZhuatuToHeavy extends Decorator{
 
 
 	@Override
-	public void beforNextService(TuInfo info, ZhuatuService nextService,
-			int nextIndex) {
+	public void beforNextService(TuInfo info, Service nextService,int nextIndex) {
 		super.beforNextService(info, nextService, nextIndex);
 		pageMap.put(nextIndex, new LinkedList<String>());
 	}
