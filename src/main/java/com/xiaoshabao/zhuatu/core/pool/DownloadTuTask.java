@@ -1,7 +1,8 @@
-package com.xiaoshabao.zhuatu;
+package com.xiaoshabao.zhuatu.core.pool;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.xiaoshabao.zhuatu.core.config.DownloadConfig;
 import com.xiaoshabao.zhuatu.exception.ConnectException;
 import com.xiaoshabao.zhuatu.http.HttpAble;
 import com.xiaoshabao.zhuatu.http.HttpType;
@@ -14,7 +15,7 @@ public class DownloadTuTask implements Runnable {
 	private String url;
 	private String fileNamePath;
 	private HttpType httpType;
-	private ZhuatuConfig config;
+	private DownloadConfig config;
 
 	/**
 	 * 下载文件
@@ -25,7 +26,7 @@ public class DownloadTuTask implements Runnable {
 	 *            E:\\test\\gm\\01.jpg
 	 * @param httpType 下载方式
 	 */
-	public DownloadTuTask(String url, String fileNamePath,ZhuatuConfig config) {
+	public DownloadTuTask(String url, String fileNamePath,DownloadConfig config) {
 		this.url = url;
 		this.fileNamePath = fileNamePath;
 		this.httpType=config.getDwonloadType();

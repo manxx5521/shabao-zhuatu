@@ -12,6 +12,8 @@ public class Service {
 	private ZhuatuCenter center;
 	private ParserFunction parserFunction;
 	private ParserUrlFunction parserUrlFunction;
+	/**是否是等待项目*/
+	private boolean waitProject=false;
 	
 	private NextFunction nextFunction;
 	
@@ -39,7 +41,7 @@ public class Service {
 	
 	
 	/**
-	 * 穿件解析当前页面函数
+	 * 解析当前页面函数
 	 * @param parser
 	 * @return
 	 */
@@ -82,6 +84,22 @@ public class Service {
 		return this;
 	}
 	
+	/**
+	 * 是否需要等待(默认false)
+	 * @param waitProject
+	 */
+	public Service waitProject(boolean waitProject) {
+		this.waitProject = waitProject;
+		return this;
+	}
+	
+	
+	public boolean isWaitProject() {
+		return waitProject;
+	}
+
+	
+
 	public ParserUrlFunction getParserUrlFunction() {
 		return parserUrlFunction;
 	}

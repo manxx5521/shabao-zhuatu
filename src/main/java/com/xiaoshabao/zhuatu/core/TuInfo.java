@@ -1,4 +1,4 @@
-package com.xiaoshabao.zhuatu;
+package com.xiaoshabao.zhuatu.core;
 
 import java.io.Serializable;
 

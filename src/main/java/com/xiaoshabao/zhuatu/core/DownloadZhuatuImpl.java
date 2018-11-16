@@ -13,23 +13,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xiaoshabao.zhuatu.DownloadTuTask;
-import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
-import com.xiaoshabao.zhuatu.ZhuatuDownloadPool;
-import com.xiaoshabao.zhuatu.ZhuatuUtil;
-import com.xiaoshabao.zhuatu.service.able.ProjectAble;
-import com.xiaoshabao.zhuatu.service.able.ZhuatuDownloadAble;
-import com.xiaoshabao.zhuatu.service.able.ZhuatuWaitAble;
+import com.xiaoshabao.zhuatu.core.config.DownloadConfig;
+import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.core.pool.DownloadTuTask;
+import com.xiaoshabao.zhuatu.core.pool.ZhuatuDownloadPool;
 
 public class DownloadZhuatuImpl extends Decorator {
-	private final static Logger log = LoggerFactory
-			.getLogger(DownloadZhuatuImpl.class);
+	private final static Logger log = LoggerFactory.getLogger(DownloadZhuatuImpl.class);
 	
-	/** 是否需要下载池 */
-	protected boolean isNeedPool = false;
-	
-	private ZhuatuConfig config;
+	private DownloadConfig config;
 	private final static int TASK_TIME=5;
 	private AtomicInteger time=new AtomicInteger(TASK_TIME);
 	
@@ -39,9 +31,13 @@ public class DownloadZhuatuImpl extends Decorator {
 	
 
 	@Override
-	public void init(List<Service> serviceList, ZhuatuConfig config) {
-		super.init(serviceList, config);
-		this.config = config;
+	public void init(List<Service> serviceList, ZhuatuConfig bconfig) {
+		super.init(serviceList, bconfig);
+		
+		if(!(bconfig instanceof DownloadConfig)) {
+			return;
+		}
+		this.config = (DownloadConfig) bconfig;;
 
 		// 加载本地文件
 		if (config.isLoadLocalFile()) {
@@ -101,8 +97,17 @@ public class DownloadZhuatuImpl extends Decorator {
 	@Override
 	public boolean doReturnProject(Service service, TuInfo info) {
 		if( super.doReturnProject(service, info)){
+			//如果时不需要访问的域名前缀
+			for(String start:config.getNoUrl()){
+				if(info.getUrl().startsWith(start)){
+					log.info("链接在noUrl中无需访问。url->{}",info.getUrl());
+					return false;
+				}
+			}
+			
+			
 			// 如果是项目服务，进行项目比对排重
-			if (service instanceof ProjectAble) {
+			if (service.isWaitProject()) {
 				
 				String name=info.getTitle();
 				
@@ -150,18 +155,18 @@ public class DownloadZhuatuImpl extends Decorator {
 			}
 
 			// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
-			if (isNeedPool && service instanceof ZhuatuWaitAble) {
+			/*if (isNeedPool && service instanceof ZhuatuWaitAble) {
 				// 等待线程完成
 				System.out.println();
-				/*ZhuatuDownloadPool.getInstance().waitActiveThread();
+				ZhuatuDownloadPool.getInstance().waitActiveThread();
 				if(ZhuatuDownloadPool.getInstance().getQueue().size()>100) {
 					
-				}*/
+				}
 				
-			}
+			}*/
 
 			// 如果是需要下载的url
-			if (service instanceof ZhuatuDownloadAble) {
+			if (service.isDownloadUrl()) {
 				String fileNameUrl = info.getUrl();
 				if (fileNameUrl.contains("?")&&fileNameUrl.lastIndexOf("/")<fileNameUrl.lastIndexOf("?")) {
 					fileNameUrl = fileNameUrl.substring(0, fileNameUrl.indexOf("?"));
@@ -203,7 +208,7 @@ public class DownloadZhuatuImpl extends Decorator {
 	public void afterPageProjet(Service service,TuInfo info) {
 		super.afterPageProjet(service, info);
 		
-		if (service instanceof ProjectAble) {
+		if (service.isWaitProject()) {
 			DataCache.getInstance().putActiveToProject(info.getTitle());
 		}
 	}

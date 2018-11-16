@@ -1,6 +1,6 @@
 package com.xiaoshabao.zhuatu.core.function;
 
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
 
 /**
  * 解析下一页

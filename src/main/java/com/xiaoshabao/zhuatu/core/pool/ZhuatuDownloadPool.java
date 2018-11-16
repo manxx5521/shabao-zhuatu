@@ -1,4 +1,4 @@
-package com.xiaoshabao.zhuatu;
+package com.xiaoshabao.zhuatu.core.pool;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;

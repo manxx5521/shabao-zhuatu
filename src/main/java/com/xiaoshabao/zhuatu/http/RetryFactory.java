@@ -1,4 +1,4 @@
-package com.xiaoshabao.zhuatu;
+package com.xiaoshabao.zhuatu.http;
 
 import java.net.SocketException;
 import java.net.SocketTimeoutException;

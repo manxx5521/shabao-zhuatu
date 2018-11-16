@@ -10,9 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
-import com.xiaoshabao.zhuatu.ZhuatuUtil;
+import com.xiaoshabao.zhuatu.core.config.DownloadConfig;
+import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.exception.ZhuatuException;
 import com.xiaoshabao.zhuatu.http.HttpAble;
 import com.xiaoshabao.zhuatu.http.ProxyOkHttp;
@@ -40,6 +39,16 @@ public class ZhuatuCenter{
 	public ZhuatuConfig createConfig() {
 		config=new ZhuatuConfig(this);
 		return config;
+	}
+	
+	/**
+	 * 创建配置信息
+	 * @return
+	 */
+	public DownloadConfig createDownloadConfig() {
+		DownloadConfig dconfig=new DownloadConfig(this);
+		this.config=dconfig;
+		return dconfig;
 	}
 	
 	/**
@@ -155,14 +164,6 @@ public class ZhuatuCenter{
 			while (iterator.hasNext()) {
 				TuInfo tuInfo = iterator.next();
 				ZhuatuUtil.formatInfo(tuInfo,config.getWebRoot());
-				
-				//如果时不需要访问的域名前缀
-				for(String start:config.getNoUrl()){
-					if(tuInfo.getUrl().startsWith(start)){
-						log.info("链接在noUrl中无需访问。url->{}",tuInfo.getUrl());
-						continue ma;
-					}
-				}
 				
 				// 扩展操作
 				if (!parser.doReturnProject(service, tuInfo)) {

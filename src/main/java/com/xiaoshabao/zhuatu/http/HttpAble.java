@@ -3,9 +3,6 @@ package com.xiaoshabao.zhuatu.http;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.xiaoshabao.zhuatu.DownloadRetry;
-import com.xiaoshabao.zhuatu.RetryFactory;
-
 /**
  * 统一规划访问数据接口
  * 

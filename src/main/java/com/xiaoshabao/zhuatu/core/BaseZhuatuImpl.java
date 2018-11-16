@@ -2,8 +2,7 @@ package com.xiaoshabao.zhuatu.core;
 
 import java.util.List;
 
-import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
 
 public class BaseZhuatuImpl implements ZhuatuParser {
 

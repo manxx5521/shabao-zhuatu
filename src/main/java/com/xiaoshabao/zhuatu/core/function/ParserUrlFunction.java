@@ -2,8 +2,8 @@ package com.xiaoshabao.zhuatu.core.function;
 
 import java.util.List;
 
-import com.xiaoshabao.zhuatu.TuInfo;
-import com.xiaoshabao.zhuatu.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.core.TuInfo;
+import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
 
 /**
  * 解析url

@@ -1,22 +1,16 @@
-package com.xiaoshabao.zhuatu;
+package com.xiaoshabao.zhuatu.core.config;
 
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.xiaoshabao.zhuatu.core.Service;
 import com.xiaoshabao.zhuatu.core.ZhuatuCenter;
-import com.xiaoshabao.zhuatu.http.HttpAble;
+import com.xiaoshabao.zhuatu.http.HttpAble.Method;
 import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.http.OkHttpManager;
 
-public class ZhuatuConfig {
+public class DownloadConfig extends ZhuatuConfig {
 
-	/** 初始url */
-	private String url;
-
-	private Charset charset = Charset.defaultCharset();
 	/**
 	 * 设置保存路径
 	 */
@@ -24,9 +18,6 @@ public class ZhuatuConfig {
 
 	/** 扩展保存目录，只做项目查询，不保存数据 */
 	private Set<String> extSavePath = new HashSet<String>();
-
-	private HttpAble.Method method = HttpAble.Method.GET;
-
 	/** 下载链接解析函数 */
 	private Function<String, String> downlaodUrlParser;
 
@@ -43,70 +34,24 @@ public class ZhuatuConfig {
 	 * 下载方式
 	 */
 	private HttpType dwonloadType = HttpType.OKHTTP;
-	/**
-	 * 获得基本url 比如：http://tu.fengniao.com
-	 */
-	private String webRoot;
 
 	/** 不下载文件的名称 */
 	private Set<String> noDownloadName = new HashSet<String>();
-
-	/** 是否保存项目链接地址 */
-	private boolean saveLink = false;
-
-	/**
-	 * 通过几个线程抓取
-	 */
-	private int threadCount = 1;
-
-	/**
-	 * 代理设置
-	 */
-	private String proxyIp;
-
-	/**
-	 * 代理端口
-	 */
-	private int proxyPort;
 
 	/**
 	 * 需要重新检查的项目
 	 */
 	private Set<String> checkProjects = new HashSet<String>();
 
-	/***对执行的url自动排重*/
-	private boolean heavyURL =true;
-	
 	/**
 	 * 加载本地文件目录
 	 */
-	private boolean loadLocalFile=true;
-	
-	private ZhuatuCenter center;
-	
-	
-	public ZhuatuConfig() {
+	private boolean loadLocalFile = true;
 
+	public DownloadConfig(ZhuatuCenter center) {
+		super(center);
 	}
 
-	public ZhuatuConfig(ZhuatuCenter center) {
-		this.center=center;
-	}
-	
-	public ZhuatuCenter getCenter() {
-		return center;
-	}
-	
-	/**
-	 * 创建一层抓图
-	 * @return
-	 */
-	public Service createService() {
-		return center.createService();
-	}
-	
-	
-	
 	/**
 	 * 下载链接解析函数
 	 * <p>
@@ -120,18 +65,8 @@ public class ZhuatuConfig {
 	 * </pre>
 	 * </p>
 	 */
-	public void setDownlaodUrlParser(Function<String, String> downlaodUrlParser) {
+	public DownloadConfig setDownlaodUrlParser(Function<String, String> downlaodUrlParser) {
 		this.downlaodUrlParser = downlaodUrlParser;
-	}
-
-	/**
-	 * 设置编码格式
-	 * 
-	 * @param charset
-	 *            UTF-8
-	 */
-	public ZhuatuConfig setCharset(String charset) {
-		this.charset = Charset.forName(charset);
 		return this;
 	}
 
@@ -141,26 +76,9 @@ public class ZhuatuConfig {
 	 * @param savePath
 	 *            E:\\test\\test
 	 */
-	public ZhuatuConfig setSavePath(String savePath) {
+	public DownloadConfig setSavePath(String savePath) {
 		this.savePath = savePath;
 		return this;
-	}
-
-	/**
-	 * 访问类型post或者get
-	 * 
-	 * @param method
-	 */
-	public void setMethod(HttpAble.Method method) {
-		this.method = method;
-	}
-
-	public Charset getCharset() {
-		return charset;
-	}
-
-	public String getCharsetString() {
-		return charset.name();
 	}
 
 	public String getSavePath() {
@@ -169,10 +87,6 @@ public class ZhuatuConfig {
 
 	public Set<String> getExtSavePath() {
 		return extSavePath;
-	}
-
-	public HttpAble.Method getMethod() {
-		return method;
 	}
 
 	public Function<String, String> getDownlaodUrlParser() {
@@ -193,7 +107,7 @@ public class ZhuatuConfig {
 	 * 
 	 * @return
 	 */
-	public ZhuatuConfig addNoUrl(String urlPrefix) {
+	public DownloadConfig addNoUrl(String urlPrefix) {
 		noUrl.add(urlPrefix);
 		return this;
 	}
@@ -207,7 +121,7 @@ public class ZhuatuConfig {
 	 *            全路径url用来测试，是否可以返回内容
 	 * @return
 	 */
-	public ZhuatuConfig testNoUrl(String urlPrefix, String url) {
+	public DownloadConfig testNoUrl(String urlPrefix, String url) {
 		if (!OkHttpManager.getInstance().testUrl(url)) {
 			noUrl.add(urlPrefix);
 		}
@@ -219,7 +133,7 @@ public class ZhuatuConfig {
 	 * 
 	 * @return
 	 */
-	public ZhuatuConfig addNoUrl(String... url) {
+	public DownloadConfig addNoUrl(String... url) {
 		for (String u : url) {
 			noUrl.add(u);
 		}
@@ -234,8 +148,6 @@ public class ZhuatuConfig {
 	public Set<String> getFirstProject() {
 		return firstProject;
 	}
-	
-	
 
 	public boolean isLoadLocalFile() {
 		return loadLocalFile;
@@ -243,10 +155,11 @@ public class ZhuatuConfig {
 
 	/**
 	 * 是否加载本地目录（默认true）
+	 * 
 	 * @param loadLocalFile
 	 * @return
 	 */
-	public ZhuatuConfig loadLocalFile(boolean loadLocalFile) {
+	public DownloadConfig loadLocalFile(boolean loadLocalFile) {
 		this.loadLocalFile = loadLocalFile;
 		return this;
 	}
@@ -254,7 +167,7 @@ public class ZhuatuConfig {
 	/**
 	 * 优先下载的项目
 	 */
-	public ZhuatuConfig addFirstProject(String title) {
+	public DownloadConfig addFirstProject(String title) {
 		firstProject.add(title);
 		return this;
 	}
@@ -262,7 +175,7 @@ public class ZhuatuConfig {
 	/**
 	 * 优先下载的项目
 	 */
-	public ZhuatuConfig addFirstProject(String... titles) {
+	public DownloadConfig addFirstProject(String... titles) {
 		for (String title : titles) {
 			firstProject.add(title);
 		}
@@ -275,7 +188,7 @@ public class ZhuatuConfig {
 	 * @param names
 	 * @return
 	 */
-	public ZhuatuConfig addNoDownloadName(String... names) {
+	public DownloadConfig addNoDownloadName(String... names) {
 		for (String name : names) {
 			noDownloadName.add(name);
 		}
@@ -300,30 +213,8 @@ public class ZhuatuConfig {
 		this.dwonloadType = dwonloadType;
 	}
 
-	/**
-	 * 获得基本url 比如：http://tu.fengniao.com
-	 * 
-	 * @return
-	 */
-	public String getWebRoot() {
-		return webRoot;
-	}
-
-	/**
-	 * 获得基本url 比如：http://tu.fengniao.com/
-	 * 
-	 * @return
-	 */
-	public String getWebRootAll() {
-		return webRoot + "/";
-	}
-
-	public void setWebRoot(String webRoot) {
-		this.webRoot = webRoot;
-	}
-
 	/** 扩展保存目录，只做项目查询，不保存数据 */
-	public ZhuatuConfig addExtSavePath(String path) {
+	public DownloadConfig addExtSavePath(String path) {
 		this.extSavePath.add(path);
 		return this;
 	}
@@ -334,24 +225,11 @@ public class ZhuatuConfig {
 	 * @param name
 	 * @return
 	 */
-	public ZhuatuConfig addCheckPoject(String... names) {
+	public DownloadConfig addCheckPoject(String... names) {
 		for (String name : names) {
 			checkProjects.add(name);
 		}
 		return this;
-	}
-	
-	/**
-	 * 设置是进行对url排重（默认 true）
-	 * @param b
-	 * @return
-	 */
-	public ZhuatuConfig heavyURL(boolean b) {
-		this.heavyURL=b;
-		return this;
-	}
-	public boolean isHeavyURL() {
-		return heavyURL;
 	}
 
 	public Set<String> getCheckProjects() {
@@ -362,43 +240,49 @@ public class ZhuatuConfig {
 		return noDownloadName;
 	}
 
-	public boolean isSaveLink() {
-		return saveLink;
-	}
+	/******* 以下内容重构父级，方便设置属性 begin *********/
 
-	public void setSaveLink(boolean saveLink) {
-		this.saveLink = saveLink;
-	}
-
-	public int getThreadCount() {
-		return threadCount;
-	}
-
-	public void setThreadCount(int threadCount) {
-		this.threadCount = threadCount;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public ZhuatuConfig setUrl(String url) {
-		this.url = url;
+	@Override
+	public DownloadConfig setCharset(String charset) {
+		super.setCharset(charset);
 		return this;
 	}
 
-	public String getProxyIp() {
-		return proxyIp;
-	}
-
-	public int getProxyPort() {
-		return proxyPort;
-	}
-
-	public ZhuatuConfig setProxyConfig(String ip, Integer port) {
-		this.proxyIp = ip;
-		this.proxyPort = port;
+	@Override
+	public DownloadConfig setMethod(Method method) {
+		super.setMethod(method);
 		return this;
 	}
 
+	@Override
+	public DownloadConfig heavyURL(boolean b) {
+		super.heavyURL(b);
+		return this;
+	}
+
+	@Override
+	public DownloadConfig setSaveLink(boolean saveLink) {
+		super.setSaveLink(saveLink);
+		return this;
+	}
+
+	@Override
+	public DownloadConfig setThreadCount(int threadCount) {
+		super.setThreadCount(threadCount);
+		return this;
+	}
+
+	@Override
+	public DownloadConfig setUrl(String url) {
+		super.setUrl(url);
+		return this;
+	}
+
+	@Override
+	public DownloadConfig setProxyConfig(String ip, Integer port) {
+		super.setProxyConfig(ip, port);
+		return this;
+	}
+
+	/******* 以上内容重构父级，方便设置属性 end *********/
 }
