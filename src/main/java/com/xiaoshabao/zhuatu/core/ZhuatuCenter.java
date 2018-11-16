@@ -2,6 +2,7 @@ package com.xiaoshabao.zhuatu.core;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -151,6 +152,16 @@ public class ZhuatuCenter{
 				}
 				list = service.getParserFunction().parser(html, pageInfo, config);
 			}
+			
+			if (service.getParserResultFunction() != null) {
+				html=this.getUrl(pageInfo.getUrl());
+				// 访问失败跳出
+				if (html == null) {
+					return;
+				}
+				list=new LinkedList<TuInfo>();
+				service.getParserResultFunction().parser(html, pageInfo, config,list);
+			}
 		
 		} catch (Exception e) {
 			log.error("解析错误", e);
@@ -189,7 +200,10 @@ public class ZhuatuCenter{
 			if(html==null) {
 				html=this.getUrl(pageInfo.getUrl());
 			}
-			nextUrl = service.getNextFunction().nextPage(html, config);
+			
+			if(service.getNextFunction()!=null) {
+				nextUrl = service.getNextFunction().nextPage(html, config);
+			}
 		} catch (Exception e) {
 			log.warn("url解析下一页时错误。  url->{}", pageInfo.getUrl());
 		}

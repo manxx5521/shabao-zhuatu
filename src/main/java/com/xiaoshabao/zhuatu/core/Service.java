@@ -2,6 +2,7 @@ package com.xiaoshabao.zhuatu.core;
 
 import com.xiaoshabao.zhuatu.core.function.NextFunction;
 import com.xiaoshabao.zhuatu.core.function.ParserFunction;
+import com.xiaoshabao.zhuatu.core.function.ParserResultFunction;
 import com.xiaoshabao.zhuatu.core.function.ParserUrlFunction;
 
 /**
@@ -11,6 +12,7 @@ public class Service {
 	
 	private ZhuatuCenter center;
 	private ParserFunction parserFunction;
+	private ParserResultFunction parserResultFunction;
 	private ParserUrlFunction parserUrlFunction;
 	/**是否是等待项目*/
 	private boolean waitProject=false;
@@ -85,6 +87,15 @@ public class Service {
 	}
 	
 	/**
+	 * 解析界面，带结果
+	 * @return
+	 */
+	public Service parserResultFunction(ParserResultFunction parserResultFunction) {
+		this.parserResultFunction = parserResultFunction;
+		return this;
+	}
+	
+	/**
 	 * 是否需要等待(默认false)
 	 * @param waitProject
 	 */
@@ -94,6 +105,11 @@ public class Service {
 	}
 	
 	
+	public ParserResultFunction getParserResultFunction() {
+		return parserResultFunction;
+	}
+	
+
 	public boolean isWaitProject() {
 		return waitProject;
 	}

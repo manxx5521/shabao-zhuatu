@@ -104,6 +104,9 @@ public class ZhuatuUtil {
 	 */
 	public static void writerHtml(String html) {
 		File file = new File("E:\\test\\test\\11.html");
+		if(!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
 		try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
 			pw.print(html);
 		} catch (IOException e) {

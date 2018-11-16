@@ -154,38 +154,30 @@ public class DownloadZhuatuImpl extends Decorator {
 				log.warn("**开始下载项目 {}。(目录：{})***********",info.getTitle(),config.getSavePath());
 			}
 
-			// 需要等待相同内容连接池，无需特殊处理，通过线程池处理等待
-			/*if (isNeedPool && service instanceof ZhuatuWaitAble) {
-				// 等待线程完成
-				System.out.println();
-				ZhuatuDownloadPool.getInstance().waitActiveThread();
-				if(ZhuatuDownloadPool.getInstance().getQueue().size()>100) {
-					
-				}
-				
-			}*/
-
 			// 如果是需要下载的url
 			if (service.isDownloadUrl()) {
-				String fileNameUrl = info.getUrl();
-				if (fileNameUrl.contains("?")&&fileNameUrl.lastIndexOf("/")<fileNameUrl.lastIndexOf("?")) {
-					fileNameUrl = fileNameUrl.substring(0, fileNameUrl.indexOf("?"));
+				
+				//自定义的url解析
+				String downloadUrl =parserDowloadUrl(info.getUrl());
+				
+				//去除无用问号
+				if (downloadUrl.contains("?")&&downloadUrl.lastIndexOf("/")<downloadUrl.lastIndexOf("?")) {
+					downloadUrl = downloadUrl.substring(0, downloadUrl.indexOf("?"));
 				}
-				String fileName = ZhuatuUtil.formatTitleName(fileNameUrl.substring(fileNameUrl.lastIndexOf("/") + 1, fileNameUrl.length()));
 				
+				String fileName = ZhuatuUtil.formatTitleName(downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length()));
 				
-				
-				String downloadUrl=parserDowloadUrl(info.getUrl());
-				//判断是否是不下载url
+				//判断不下载的名字
 				if (config.getNoDownloadName().size() > 0) {
-					String baseName=FilenameUtils.getBaseName(fileName);
-					if(config.getNoDownloadName().contains(baseName)) {
+					String baseName = FilenameUtils.getBaseName(fileName);
+					if (config.getNoDownloadName().contains(baseName)) {
 						return false;
 					}
 				}
 				
 				String saveName=config.getSavePath() + File.separator +info.getTitle() + File.separator + fileName;
 				
+				//检查下载
 				if (config.getCheckProjects().contains(info.getTitle())) {
 					File checkFile=new File(saveName);
 					if(checkFile.exists()){
@@ -194,7 +186,7 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
-				log.info("装载下载链接：{};{}" ,fileNameUrl,info());
+				log.info("装载下载链接：{};{}" ,downloadUrl,info());
 				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot()),saveName,config);
 				ZhuatuDownloadPool.getInstance().execute(myTask);
 			}
