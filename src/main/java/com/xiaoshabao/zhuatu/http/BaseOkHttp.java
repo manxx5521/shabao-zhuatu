@@ -2,16 +2,15 @@ package com.xiaoshabao.zhuatu.http;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
-
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class BaseOkHttp implements HttpAble{
@@ -36,26 +35,27 @@ public class BaseOkHttp implements HttpAble{
 	}
 	
 	@Override
-	public boolean download(String url, String pathName) throws SocketTimeoutException {
-		try {
-			Request request = new Request.Builder().url(url).build();
-			Response response = getClient().newCall(request).execute();
-		    if (response.isSuccessful()) {
-		    	FileUtils.writeByteArrayToFile(new File(pathName), response.body().bytes());
-		    	return true;
-		    } else {
-		    	if(response.code()==404){
-		    		log.error("url访问失败,404：url->{}",url);
-		    		FileUtils.copyInputStreamToFile(BaseOkHttp.class.getResourceAsStream("/images/404.png"), new File(pathName));
-		    	}else{
-		    		log.error("url访问失败返回识别码 " + response+"\n\r url->"+url);
-		    	}
-		    }
-		}catch(SocketTimeoutException e){
+	public boolean download(String url, String pathName) throws IOException {
+		/*try {*/
+		Request request = new Request.Builder().url(url).build();
+		Response response = getClient().newCall(request).execute();
+		if (response.isSuccessful()) {
+			FileUtils.writeByteArrayToFile(new File(pathName), response.body()
+					.bytes());
+			return true;
+		} else {
+			if (response.code() == 404) {
+				log.error("url访问失败,404：url->{}", url);
+				FileUtils.copyInputStreamToFile(BaseOkHttp.class.getResourceAsStream("/images/404.png"),new File(pathName));
+			} else {
+				log.error("url访问失败返回识别码 " + response + "\n\r url->" + url);
+			}
+		}
+		/*}catch(SocketTimeoutException e){
 			throw e;
 		}catch (IOException e) {
 			log.error("url访问失败 ",e);
-		}
+		}*/
 		return false;
 	}
 	
