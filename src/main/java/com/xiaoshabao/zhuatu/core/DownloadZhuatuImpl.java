@@ -174,8 +174,15 @@ public class DownloadZhuatuImpl extends Decorator {
 						return false;
 					}
 				}
-				
-				String saveName=config.getSavePath() + File.separator +info.getTitle() + File.separator + fileName;
+				StringBuilder savePath=new StringBuilder();
+				savePath.append(service.getSavePath()!=null?service.getSavePath():config.getSavePath());
+				if(StringUtils.isNotEmpty(info.getTitle())){
+					savePath.append(File.separator);
+					savePath.append(info.getTitle());
+				}
+				savePath.append(File.separator);
+				savePath.append(fileName);
+				String saveName=savePath.toString();
 				
 				//检查下载
 				if (config.getCheckProjects().contains(info.getTitle())) {

@@ -1,6 +1,7 @@
 package com.xiaoshabao.zhuatu.core;
 
 import com.xiaoshabao.zhuatu.core.function.NextFunction;
+import com.xiaoshabao.zhuatu.core.function.NextNoRequestFunction;
 import com.xiaoshabao.zhuatu.core.function.ParserFunction;
 import com.xiaoshabao.zhuatu.core.function.ParserResultFunction;
 import com.xiaoshabao.zhuatu.core.function.ParserUrlFunction;
@@ -14,14 +15,17 @@ public class Service {
 	private ParserFunction parserFunction;
 	private ParserResultFunction parserResultFunction;
 	private ParserUrlFunction parserUrlFunction;
+	private NextNoRequestFunction nextNoRequestFunction;
+	private NextFunction nextFunction;
+	
 	/**是否是等待项目*/
 	private boolean waitProject=false;
-	
-	private NextFunction nextFunction;
 	
 	/**当前解析完成后，返回的url是否进行下载*/
 	private boolean downloadUrl=false;
 	
+	/**保存路径*/
+	private String savePath;
 	
 	public Service(ZhuatuCenter center) {
 		this.center=center;
@@ -98,7 +102,16 @@ public class Service {
 		this.parserResultFunction = parserResultFunction;
 		return this;
 	}
-	
+
+	/**
+	 * 解析下一页，不会直接获取html内容
+	 * @param nextNoRequestFunction
+	 */
+	public Service nextNoRequestFunction(NextNoRequestFunction nextNoRequestFunction) {
+		this.nextNoRequestFunction = nextNoRequestFunction;
+		return this;
+	}
+
 	/**
 	 * 是否需要等待(默认false)
 	 * @param waitProject
@@ -108,7 +121,18 @@ public class Service {
 		return this;
 	}
 	
+	/**
+	 * 保存目录，根据service路径（只对当前servcie有效）
+	 * @param savePath
+	 */
+	public void savePath(String savePath) {
+		this.savePath = savePath;
+	}
 	
+	public String getSavePath() {
+		return savePath;
+	}
+
 	public ParserResultFunction getParserResultFunction() {
 		return parserResultFunction;
 	}
@@ -134,6 +158,10 @@ public class Service {
 
 	public ParserFunction getParserFunction() {
 		return parserFunction;
+	}
+	
+	public NextNoRequestFunction getNextNoRequestFunction() {
+		return nextNoRequestFunction;
 	}
 
 

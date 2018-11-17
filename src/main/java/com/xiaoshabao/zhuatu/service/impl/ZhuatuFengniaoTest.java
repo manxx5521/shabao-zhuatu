@@ -44,7 +44,7 @@ public class ZhuatuFengniaoTest {
 			return url.substring(0, url.indexOf("?"));
 		}).createService()//先解析出真实要访问的url
 		.parser((html,pageInfo,config)->{
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 
 			NodeList list = parser.parse(new TagNameFilter("span"));
 			for (Node node : list.toNodeArray()) {

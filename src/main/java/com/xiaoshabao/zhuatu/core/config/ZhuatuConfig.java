@@ -85,7 +85,7 @@ public class ZhuatuConfig {
 		return charset;
 	}
 
-	public String getCharsetString() {
+	public String getCharsetName() {
 		return charset.name();
 	}
 

@@ -21,7 +21,7 @@ import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
 public class ZhuatuCenter{
 	private final static Logger log = LoggerFactory.getLogger(ZhuatuCenter.class);
 	private List<Service> serviceList=new ArrayList<Service>();
-	private ZhuatuConfig config;
+	protected ZhuatuConfig config;
 	
 	
 	
@@ -85,7 +85,7 @@ public class ZhuatuCenter{
 		}
 	}
 
-	public void init() {
+	protected void init() {
 		try {
 			String url = config.getUrl();
 			if (StringUtils.isEmpty(url) || serviceList.size() < 1) {
@@ -131,7 +131,7 @@ public class ZhuatuCenter{
 	 * @param newProject
 	 *            是否是新项目（如果false表示是下一页解析）
 	 */
-	public void parserPage(Service service, TuInfo pageInfo,
+	protected void parserPage(Service service, TuInfo pageInfo,
 			int idx, boolean newProject) {
 		if(!parser.beforPageProjet(service, pageInfo,idx)){
 			return;
@@ -141,7 +141,8 @@ public class ZhuatuCenter{
 		String html = null;
 		try {
 			if (service.getParserUrlFunction() != null) {
-				list = service.getParserUrlFunction().parser(pageInfo.getUrl(), pageInfo, config);
+				list=new LinkedList<TuInfo>();
+				service.getParserUrlFunction().parser(pageInfo.getUrl(), pageInfo, config,list);
 			}
 			
 			if (service.getParserFunction() != null) {
@@ -197,11 +198,12 @@ public class ZhuatuCenter{
 		//解析当前层下一页
 		String nextUrl = null;
 		try {
-			if(html==null) {
-				html=this.getUrl(pageInfo.getUrl());
-			}
-			
-			if(service.getNextFunction()!=null) {
+			if(service.getNextNoRequestFunction()!=null) {
+				nextUrl = service.getNextNoRequestFunction().nextPage(pageInfo.getUrl(), config);
+			}else if(service.getNextFunction()!=null){
+				if(html==null) {
+					html=this.getUrl(pageInfo.getUrl());
+				}
 				nextUrl = service.getNextFunction().nextPage(html, config);
 			}
 		} catch (Exception e) {
@@ -216,7 +218,7 @@ public class ZhuatuCenter{
 		
 	}
 	
-	private String getUrl(String url) {
+	protected String getUrl(String url) {
 		HttpAble httAble=null;
 		if(StringUtils.isEmpty(config.getProxyIp())){
 			// 访问url

@@ -18,6 +18,6 @@ public interface ParserUrlFunction {
 	 * @param config 
 	 * @return 大小返回0或者null时跳过，直接进行下一页
 	 */
-	List<TuInfo> parser(String url,TuInfo pageInfo,ZhuatuConfig config) throws Exception;
+	void parser(String url,TuInfo pageInfo,ZhuatuConfig config,List<TuInfo> result) throws Exception;
 
 }

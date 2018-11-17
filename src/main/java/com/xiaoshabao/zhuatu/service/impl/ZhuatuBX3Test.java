@@ -30,7 +30,7 @@ public class ZhuatuBX3Test {
 		.waitProject(true)
 		.parser((html, pageInfo, config)->{
 			List<TuInfo> result = new LinkedList<TuInfo>();
-			Parser parser = Parser.createParser(html, config.getCharsetString());
+			Parser parser = Parser.createParser(html, config.getCharsetName());
 			NodeList list = parser.parse(new HasAttributeFilter("id", "zjneirong"));
 			String content = list.elementAt(0).getChildren().toHtml();
 			try {
