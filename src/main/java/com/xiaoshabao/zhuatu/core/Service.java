@@ -27,6 +27,10 @@ public class Service {
 		this.center=center;
 	}
 	
+	public ZhuatuCenter getCenter(){
+		return center;
+	}
+	
 	/**
 	 * 启动抓图
 	 */

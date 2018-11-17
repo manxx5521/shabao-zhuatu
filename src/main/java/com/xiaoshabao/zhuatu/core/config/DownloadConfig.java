@@ -214,8 +214,10 @@ public class DownloadConfig extends ZhuatuConfig {
 	}
 
 	/** 扩展保存目录，只做项目查询，不保存数据 */
-	public DownloadConfig addExtSavePath(String path) {
-		this.extSavePath.add(path);
+	public DownloadConfig addExtSavePath(String... paths) {
+		for(String path:paths){
+			this.extSavePath.add(path);
+		}
 		return this;
 	}
 
