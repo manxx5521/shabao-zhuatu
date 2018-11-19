@@ -119,7 +119,9 @@ public class ZhuatuUtil {
 	 * @return
 	 */
 	public static String formatContentToTxt(String htmlStr) {
-        String textStr = "";  
+//		Jsoup.clean(html, Whitelist.none())
+
+		String textStr = "";  
         java.util.regex.Pattern p_script;  
         java.util.regex.Matcher m_script;  
         java.util.regex.Pattern p_style;  
