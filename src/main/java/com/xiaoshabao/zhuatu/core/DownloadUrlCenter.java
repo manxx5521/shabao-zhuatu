@@ -24,7 +24,7 @@ public class DownloadUrlCenter extends ZhuatuCenter {
 	public DownloadUrlCenter addDownloadUrl(String title,String url) {
 		if(list.stream().filter(t->t.getUrl().equals(url))
 				.count()==0){
-			list.add(new TuInfo(url,null));
+			list.add(new TuInfo(url,title));
 		}
 		return this;
 	}
