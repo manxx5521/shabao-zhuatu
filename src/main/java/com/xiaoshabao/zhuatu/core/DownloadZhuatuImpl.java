@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -15,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.core.config.DownloadConfig;
 import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
+import com.xiaoshabao.zhuatu.core.log.LogManager;
 import com.xiaoshabao.zhuatu.core.pool.DownloadTuTask;
 import com.xiaoshabao.zhuatu.core.pool.ZhuatuDownloadPool;
 
@@ -22,9 +21,6 @@ public class DownloadZhuatuImpl extends Decorator {
 	private final static Logger log = LoggerFactory.getLogger(DownloadZhuatuImpl.class);
 	
 	private DownloadConfig config;
-	private final static int TASK_TIME=5;
-	private AtomicInteger time=new AtomicInteger(TASK_TIME);
-	
 	public DownloadZhuatuImpl(ZhuatuParser parser) {
 		super(parser);
 	}
@@ -57,23 +53,9 @@ public class DownloadZhuatuImpl extends Decorator {
 		}
 
 		ZhuatuDownloadPool.init();
-
-		// 启动一个日志定时线程输出 线程池状态
-		CompletableFuture.runAsync(() -> {
-			while (true) {
-				try {
-					Thread.sleep(1000);
-					if (time.get() < 1) {
-						log.info(info());
-					} else {
-						time.getAndDecrement();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-		});
+		
+		//初始化线程池日志
+		LogManager.getInstance();
 
 	}
 
@@ -193,7 +175,7 @@ public class DownloadZhuatuImpl extends Decorator {
 					}
 				}
 				
-				log.info("装载下载链接：{};{}" ,downloadUrl,info());
+				log.info("装载下载链接：{};{}" ,downloadUrl,LogManager.getInstance().getInfoAndRefresh());
 				DownloadTuTask myTask = new DownloadTuTask(ZhuatuUtil.formatUrl(downloadUrl,config.getWebRoot()),saveName,config);
 				ZhuatuDownloadPool.getInstance().execute(myTask);
 			}
@@ -233,13 +215,6 @@ public class DownloadZhuatuImpl extends Decorator {
 			url=config.getDownlaodUrlParser().apply(url);
 		}
 		return url;
-	}
-	
-	private String info(){
-		time.set(TASK_TIME);
-		StringBuilder sb=new StringBuilder();
-		sb.append("{活跃下载：").append(ZhuatuDownloadPool.getInstance().getActiveCount()).append("}");
-		return sb.toString(); 
 	}
 	
 }
