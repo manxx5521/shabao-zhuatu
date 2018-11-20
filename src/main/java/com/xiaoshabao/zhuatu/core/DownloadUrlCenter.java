@@ -17,12 +17,15 @@ public class DownloadUrlCenter extends ZhuatuCenter {
 	AtomicInteger index = new AtomicInteger(0);
 
 	public DownloadUrlCenter addDownloadUrl(String url) {
-		list.add(new TuInfo(url,null));
+		addDownloadUrl(null,url);
 		return this;
 	}
 
 	public DownloadUrlCenter addDownloadUrl(String title,String url) {
-		list.add(new TuInfo(url,title));
+		if(list.stream().filter(t->t.getUrl().equals(url))
+				.count()==0){
+			list.add(new TuInfo(url,null));
+		}
 		return this;
 	}
 	
