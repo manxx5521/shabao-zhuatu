@@ -71,7 +71,15 @@ public class Service {
 		return this;
 	}
 	
-	
+	/**
+	 * 当前解析完成后，返回的url进行下载
+	 * @param downloadUrl
+	 * @return
+	 */
+	public Service downloadUrl() {
+		this.downloadUrl = Boolean.TRUE;
+		return this;
+	}
 	
 	
 	/**
@@ -109,6 +117,15 @@ public class Service {
 	 */
 	public Service nextNoRequestFunction(NextNoRequestFunction nextNoRequestFunction) {
 		this.nextNoRequestFunction = nextNoRequestFunction;
+		return this;
+	}
+	
+	/**
+	 * 设置为需要等待的项目
+	 * @param waitProject
+	 */
+	public Service waitProject() {
+		this.waitProject = Boolean.TRUE;
 		return this;
 	}
 

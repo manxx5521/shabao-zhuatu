@@ -1,17 +1,18 @@
 package com.xiaoshabao.zhuatu.core;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Consumer;
 
 public class DataCache {
 	
 	private static volatile DataCache instance=null;
 	
-	private Set<String> projects=Collections.synchronizedSet(new HashSet<String>());
+	private Set<String> projects=Collections.synchronizedSet(new TreeSet<String>());
 	
-	private Set<String> activeProject=Collections.synchronizedSet(new HashSet<String>());
+	private Set<String> activeProject=Collections.synchronizedSet(new TreeSet<String>());
+	
 	private DataCache() {
 		
 	}
