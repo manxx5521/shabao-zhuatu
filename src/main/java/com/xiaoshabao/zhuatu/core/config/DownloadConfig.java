@@ -47,6 +47,10 @@ public class DownloadConfig extends ZhuatuConfig {
 	 * 加载本地文件目录
 	 */
 	private boolean loadLocalFile = true;
+	/**
+	 * 当访问不成功时，是否尝试代理服务
+	 */
+	private boolean tryProxy=false;
 
 	public DownloadConfig(ZhuatuCenter center) {
 		super(center);
@@ -91,6 +95,13 @@ public class DownloadConfig extends ZhuatuConfig {
 
 	public Function<String, String> getDownlaodUrlParser() {
 		return downlaodUrlParser;
+	}
+
+	/**
+	 * 当下载不成功时，是否尝试代理服务
+	 */
+	public void tryProxy() {
+		this.tryProxy = true;
 	}
 
 	/**
@@ -147,10 +158,6 @@ public class DownloadConfig extends ZhuatuConfig {
 	 */
 	public Set<String> getFirstProject() {
 		return firstProject;
-	}
-
-	public boolean isLoadLocalFile() {
-		return loadLocalFile;
 	}
 
 	/**
@@ -240,6 +247,14 @@ public class DownloadConfig extends ZhuatuConfig {
 
 	public Set<String> getNoDownloadName() {
 		return noDownloadName;
+	}
+	
+	public boolean isLoadLocalFile() {
+		return loadLocalFile;
+	}
+	
+	public boolean isTryProxy() {
+		return tryProxy;
 	}
 
 	/******* 以下内容重构父级，方便设置属性 begin *********/

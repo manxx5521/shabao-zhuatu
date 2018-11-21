@@ -142,9 +142,21 @@ public interface HttpAble {
 	 * @return 下载成功true
 	 */
 	default boolean download(String url, String pathName, int count) {
-		return new DownloadRetry<String, Boolean>(url, "下载文件" + url).setCount(count).execute(t -> {
-			return download(t, pathName);
-		});
+		return new DownloadRetry<String, Boolean>(url, "下载文件" + url).setCount(count).execute(t -> download(t, pathName));
+	}
+	
+	/**
+	 * 下载文件文件到指定目录（尝试N次）
+	 * @param url
+	 * @param pathName 保存文件名
+	 * @param count 尝试次数
+	 * @param tryProxy 尝试代理下载
+	 * @return 下载成功true
+	 */
+	default boolean download(String url, String pathName, int count,boolean tryProxy) {
+		return new DownloadRetry<String, Boolean>(url, "下载文件" + url)
+				.setCount(count)
+				.setTryProxy(tryProxy).execute(t -> download(t, pathName));
 	}
 	
 	/**

@@ -28,6 +28,11 @@ public class DownloadRetry<T, R> {
 	private String detailMsg;
 
 	private T t;
+	
+	/**
+	 * 当访问不成功时，是否尝试代理服务
+	 */
+	private boolean tryProxy=false;
 
 	public DownloadRetry(T t, String detailMsg) {
 		this.t = t;
@@ -59,7 +64,7 @@ public class DownloadRetry<T, R> {
 			if (i > count) {
 				if(laste!=null) {
 					log.error("{}执行失败,出现异常。", this.detailMsg, laste);
-					if(laste instanceof SocketException||laste instanceof SocketTimeoutException){
+					if(tryProxy&&laste instanceof SocketException||laste instanceof SocketTimeoutException){
 						throw new ConnectException(laste);
 					}
 					
@@ -85,7 +90,7 @@ public class DownloadRetry<T, R> {
 				
 				//记录错误信息
 				laste = e;
-				if (e instanceof SocketException|| e instanceof SocketTimeoutException) {
+				if (tryProxy&&e instanceof SocketException|| e instanceof SocketTimeoutException) {
 					if (2 < count) {
 						count = 2;
 					}
@@ -113,5 +118,9 @@ public class DownloadRetry<T, R> {
 		this.sleepTime = sleepTime;
 		return this;
 	}
-	
+
+	public DownloadRetry<T, R> setTryProxy(boolean tryProxy) {
+		this.tryProxy = tryProxy;
+		return this;
+	}
 }

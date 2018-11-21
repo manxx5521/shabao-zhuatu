@@ -50,7 +50,7 @@ public class DownloadTuTask implements Runnable {
 				}
 				break;
 			}
-			httpAble.download(url, fileNamePath, 5);
+			httpAble.download(url, fileNamePath, 5,config.isTryProxy());
 		} catch (ConnectException e) {
 			ProxyOkHttp.getInstance("127.0.0.1", 1080).download(url, fileNamePath,2);
 		}
