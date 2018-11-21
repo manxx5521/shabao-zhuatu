@@ -3,6 +3,7 @@ package com.xiaoshabao.zhuatu.http;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -38,7 +39,9 @@ public class BaseOkHttp implements HttpAble{
 	public boolean download(String url, String pathName) throws IOException {
 		/*try {*/
 		Request request = new Request.Builder().url(url).build();
-		Response response = getClient().newCall(request).execute();
+		Response response = getClient().newBuilder()
+				.readTimeout(DOWNLOAD_READ_TIME_OUT, TimeUnit.SECONDS) //读取超时
+				.build().newCall(request).execute();
 		if (response.isSuccessful()) {
 			FileUtils.writeByteArrayToFile(new File(pathName), response.body()
 					.bytes());

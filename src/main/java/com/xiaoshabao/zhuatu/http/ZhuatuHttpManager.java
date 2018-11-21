@@ -66,7 +66,7 @@ public class ZhuatuHttpManager implements HttpAble{
 			// 自定义超时时间等
 			RequestConfig requestConfig = RequestConfig.custom()
 					// socket超时
-					.setSocketTimeout(1000 * 60 * 15) 
+					.setSocketTimeout(DOWNLOAD_READ_TIME_OUT) 
 					// connect超时
 					.setConnectTimeout(50000) 
 					.build();

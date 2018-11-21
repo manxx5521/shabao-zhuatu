@@ -13,6 +13,8 @@ import java.nio.charset.Charset;
  *
  */
 public interface HttpAble {
+	/**读取超时时间*/
+	int DOWNLOAD_READ_TIME_OUT=1000 * 60 * 15;
 	
 	public enum Method {
 		GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE
