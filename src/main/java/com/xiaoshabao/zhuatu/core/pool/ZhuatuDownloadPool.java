@@ -60,29 +60,4 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 			}
 		}
 	}
-	
-	/**
-	 * 等待活跃的进程数小于5
-	 */
-	/*public void waitActiveThread() {
-		waitActiveThread(5);
-	}*/
-
-	/**
-	 * 等待活跃的进程数小于 size
-	 */
-	/*public void waitActiveThread(int size) {
-		while (true) {
-			if (this.getActiveCount() < 5) {
-				return;
-			} else {
-				try {
-					Thread.sleep(1000 * 1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
-	}*/
 }

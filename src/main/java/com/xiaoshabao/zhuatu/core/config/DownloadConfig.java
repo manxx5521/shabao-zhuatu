@@ -51,6 +51,19 @@ public class DownloadConfig extends ZhuatuConfig {
 	 * 当访问不成功时，是否尝试代理服务
 	 */
 	private boolean tryProxy=false;
+	
+	/**
+	 * 下载尝试代理ip
+	 */
+	private String testProxyIp;
+
+	/**
+	 * 下载尝试代理端口
+	 */
+	private int testProxyPort;
+	
+	/**是否使用自动下载模式*/
+	private boolean autoDownload=false;
 
 	public DownloadConfig(ZhuatuCenter center) {
 		super(center);
@@ -103,6 +116,7 @@ public class DownloadConfig extends ZhuatuConfig {
 	public void tryProxy() {
 		this.tryProxy = true;
 	}
+	
 
 	/**
 	 * 获得不需要下载的url前缀比如 http://www.baidu.com/
@@ -136,6 +150,27 @@ public class DownloadConfig extends ZhuatuConfig {
 		if (!OkHttpManager.getInstance().testUrl(url)) {
 			noUrl.add(urlPrefix);
 		}
+		return this;
+	}
+	
+	/**
+	 * 尝试下载代理
+	 * @param ip
+	 * @param port
+	 * @return
+	 */
+	public DownloadConfig testDownloadProxy(String ip, int port) {
+		this.testProxyIp=ip;
+		this.testProxyPort=port;
+		this.tryProxy=true;
+		return this;
+	}
+	
+	/**
+	 * 自动下载模式，只能判断url
+	 */
+	public DownloadConfig autoDownload() {
+		this.autoDownload=true;
 		return this;
 	}
 
@@ -256,6 +291,18 @@ public class DownloadConfig extends ZhuatuConfig {
 	public boolean isTryProxy() {
 		return tryProxy;
 	}
+	
+	public String getTestProxyIp() {
+		return testProxyIp;
+	}
+
+	public int getTestProxyPort() {
+		return testProxyPort;
+	}
+	
+	public boolean isAutoDownload() {
+		return autoDownload;
+	}
 
 	/******* 以下内容重构父级，方便设置属性 begin *********/
 
@@ -300,6 +347,7 @@ public class DownloadConfig extends ZhuatuConfig {
 		super.setProxyConfig(ip, port);
 		return this;
 	}
+
 
 	/******* 以上内容重构父级，方便设置属性 end *********/
 }

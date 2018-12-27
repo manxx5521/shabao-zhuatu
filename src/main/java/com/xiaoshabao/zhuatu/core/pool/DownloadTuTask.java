@@ -4,11 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.xiaoshabao.zhuatu.core.config.DownloadConfig;
 import com.xiaoshabao.zhuatu.exception.ConnectException;
+import com.xiaoshabao.zhuatu.http.DownloadAutoManager;
 import com.xiaoshabao.zhuatu.http.HttpAble;
+import com.xiaoshabao.zhuatu.http.HttpClientManager;
 import com.xiaoshabao.zhuatu.http.HttpType;
 import com.xiaoshabao.zhuatu.http.OkHttpManager;
 import com.xiaoshabao.zhuatu.http.ProxyOkHttp;
-import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
 
 public class DownloadTuTask implements Runnable {
 
@@ -35,11 +36,17 @@ public class DownloadTuTask implements Runnable {
 
 	@Override
 	public void run() {
+		
+		if(config.isAutoDownload()) {
+			DownloadAutoManager.getInstance().download(url, fileNamePath, config);
+			return;
+		}
+		
 		try {
 			HttpAble httpAble;
 			switch(httpType){
 			case HTTPCLIENT:
-				httpAble=ZhuatuHttpManager.getInstance();
+				httpAble=HttpClientManager.getInstance();
 				break;
 //			case OKHTTP:
 			default:

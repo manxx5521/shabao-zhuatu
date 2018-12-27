@@ -15,8 +15,8 @@ import com.xiaoshabao.zhuatu.core.config.DownloadConfig;
 import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.exception.ZhuatuException;
 import com.xiaoshabao.zhuatu.http.HttpAble;
+import com.xiaoshabao.zhuatu.http.HttpClientManager;
 import com.xiaoshabao.zhuatu.http.ProxyOkHttp;
-import com.xiaoshabao.zhuatu.http.ZhuatuHttpManager;
 
 public class ZhuatuCenter{
 	private final static Logger log = LoggerFactory.getLogger(ZhuatuCenter.class);
@@ -222,7 +222,7 @@ public class ZhuatuCenter{
 		HttpAble httAble=null;
 		if(StringUtils.isEmpty(config.getProxyIp())){
 			// 访问url
-			httAble = ZhuatuHttpManager.getInstance();
+			httAble = HttpClientManager.getInstance();
 		}else{
 			httAble=ProxyOkHttp.getInstance(config.getProxyIp(), config.getProxyPort());
 		}
