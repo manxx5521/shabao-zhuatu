@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.xiaoshabao.zhuatu.core.pool.ZhuatuDownloadPool;
+import com.xiaoshabao.zhuatu.http.DownloadAutoManager;
 
 /**
  * 下载线程日志管理
@@ -57,7 +58,12 @@ public class LogManager {
 	public String getInfoAndRefresh(){
 		time.set(TASK_TIME);
 		StringBuilder sb=new StringBuilder();
-		sb.append("{活跃下载：").append(ZhuatuDownloadPool.getInstance().getActiveCount()).append("}");
+		sb.append("{活跃下载：").append(ZhuatuDownloadPool.getInstance().getActiveCount());
+		Integer scount=DownloadAutoManager.getSlowCount();
+		if(scount!=null){
+			sb.append(",慢链接下载：").append(scount);
+		}
+		sb.append("}");
 		return sb.toString(); 
 	}
 	

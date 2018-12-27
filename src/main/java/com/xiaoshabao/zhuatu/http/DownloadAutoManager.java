@@ -1,12 +1,14 @@
 package com.xiaoshabao.zhuatu.http;
 
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ public class DownloadAutoManager{
 	private volatile static DownloadAutoManager instance = null;
 	
 	/**重启一个有10个链接能力的慢下载池*/
-	private Executor slowPool=Executors.newFixedThreadPool(10);
+	private static ExecutorService slowPool=Executors.newFixedThreadPool(10);
 
 	private Map<String,Wang> wang=new ConcurrentHashMap<String, Wang>();
 	
@@ -57,9 +59,14 @@ public class DownloadAutoManager{
 	public void download(String url, String fileNamePath,DownloadConfig config) {
 		initProxy(config);
 		
-		String webRoot = config.getWebRoot();
-		Wang wang = getWang(webRoot, 1);
-		
+		String webRoot=null;
+		try {
+			String host = new java.net.URL(url).getHost();
+			webRoot=url.substring(0, url.lastIndexOf(host)) + host + "/";
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		Wang wang=getWang(webRoot, 1);
 		//如果是慢链接单独下载
 		if(wang.slowCount>maxSlowCount&&wang.slowCount>wang.fastCount) {
 			slowPool.execute(()->{
@@ -82,26 +89,26 @@ public class DownloadAutoManager{
 			}
 			if (!success) {
 				wang.testLocalCount++;// 本地错误+1
-			} else {
-				return;
 			}
 		}
 
 		if (startProxy &&wang.type==2&& !success && wang.testProxyCount < maxProxyFail) {
+			log.info("切换代理尝试：{}",url);
 			success = doProxyUrl(url, fileNamePath);
 			if (!success) {
 				wang.testProxyCount++;
-			} else {
-				return;
 			}
 		}
 		
-		if(Duration.between(now, LocalDateTime.now()).toMillis()>slowTime) {
+		if(Duration.between(now, LocalDateTime.now()).getSeconds()>slowTime) {
 			wang.slowCount++;
 		}else {
 			wang.fastCount++;
 		}
-		log.error("文件下载失败：{}", url);
+		if (!success) {
+			log.error("文件下载失败：{}", url);
+		}
+		
 	}
 	
 	private boolean doProxyUrl(String url,String fileNamePath) {
@@ -160,7 +167,12 @@ public class DownloadAutoManager{
 		return dto;
 	}
 	
-	
+	public static Integer getSlowCount(){
+		if(instance!=null){
+			return ((ThreadPoolExecutor)slowPool).getActiveCount();
+		}
+		return null;
+	}
 	
 	class Wang {
 		/**0-不访问，1=本地访问，2-代理访问*/
