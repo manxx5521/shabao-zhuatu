@@ -86,6 +86,7 @@ public class DownloadAutoManager{
 				success = doUrl(url, fileNamePath, config.getDwonloadType());
 			} catch (ConnectException e) {
 				wang.type=2;
+				log.info("切换代理尝试：{}",url);
 			}
 			if (!success) {
 				wang.testLocalCount++;// 本地错误+1
@@ -93,7 +94,6 @@ public class DownloadAutoManager{
 		}
 
 		if (startProxy &&wang.type==2&& !success && wang.testProxyCount < maxProxyFail) {
-			log.info("切换代理尝试：{}",url);
 			success = doProxyUrl(url, fileNamePath);
 			if (!success) {
 				wang.testProxyCount++;
@@ -123,7 +123,7 @@ public class DownloadAutoManager{
 					if (config.isTryProxy()) {
 						ip = config.getTestProxyIp();
 						port = config.getTestProxyPort();
-					} else if (StringUtils.isEmpty(config.getProxyIp())) {
+					} else if (!StringUtils.isEmpty(config.getProxyIp())) {
 						ip = config.getProxyIp();
 						port = config.getProxyPort();
 					}
@@ -131,9 +131,9 @@ public class DownloadAutoManager{
 						try {
 							Socket socket = new Socket(ip, port); // 建立一个Socket连接
 							socket.close();
-							startProxy=false;
-						} catch (Exception e) {
 							startProxy=true;
+						} catch (Exception e) {
+							startProxy=false;
 						}
 					}else {
 						startProxy=false;
