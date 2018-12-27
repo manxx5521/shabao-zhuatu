@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -202,6 +203,18 @@ public class DownloadZhuatuImpl extends Decorator {
 	public void afterRuning() {
 		super.afterRuning();
 		ZhuatuDownloadPool.getInstance().shutdown();
+		
+		while(true) {
+			//关闭后所有任务都已完成,则返回true
+			if(ZhuatuDownloadPool.getInstance().isTerminated()) {
+				break;
+			}
+			try {
+				TimeUnit.SECONDS.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	
