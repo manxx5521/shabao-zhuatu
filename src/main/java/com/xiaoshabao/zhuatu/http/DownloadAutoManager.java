@@ -4,6 +4,10 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +34,8 @@ public class DownloadAutoManager{
 
 	private Map<String,Wang> wang=new ConcurrentHashMap<String, Wang>();
 	
+	private Map<String,List<String>> conUrl=Collections.synchronizedMap(new HashMap<String,List<String>>());
+	
 	private Boolean startProxy;
 	private String ip;
 	private int port;
@@ -41,6 +47,8 @@ public class DownloadAutoManager{
 	private int maxSlowCount=10;
 	/**计算下载慢的时间秒数**/
 	private int slowTime=30;
+	/**如果连续5无法正常连接尝试代理*/
+	private int tryProxyCount=5;
 	
 	private DownloadAutoManager() {
 	}
@@ -74,29 +82,53 @@ public class DownloadAutoManager{
 			});
 			return;
 		}
-		
 		this.download(url, fileNamePath, config,wang);
 	}
 	
 	private void download(String url, String fileNamePath,DownloadConfig config,Wang wang) {
 		LocalDateTime now = LocalDateTime.now();
 		boolean success = false;
-		if (wang.type==1&&wang.testLocalCount < maxLocalFail) {
+		boolean proxyFlag=false;
+		if (wang.type==1&&wang.failLocalCount < maxLocalFail) {
 			try {
 				success = doUrl(url, fileNamePath, config.getDwonloadType());
+				throw new ConnectException("11");
 			} catch (ConnectException e) {
-				wang.type=2;
-				log.info("切换代理尝试：{}",url);
+				proxyFlag=startProxy;
 			}
 			if (!success) {
-				wang.testLocalCount++;// 本地错误+1
+				wang.failLocalCount++;// 本地错误+1
 			}
 		}
+		
+		//判断是否使用代理模式
+		if(proxyFlag) {
+			List<String> noUrl=conUrl.get(wang.webRoot);
+			if(noUrl==null) {
+				noUrl=new ArrayList<String>(tryProxyCount);
+				conUrl.put(wang.webRoot, noUrl);
+			}
+			noUrl.add(url);
+			
+			if(noUrl.size()>tryProxyCount-1) {
+				wang.type=2;
+				log.info("切换代理尝试：{}",wang.webRoot);
+				for(String u:noUrl) {
+					if (!doProxyUrl(u, fileNamePath)) {
+						wang.failProxyCount++;
+					}
+				}
+				conUrl.remove(wang.webRoot);
+			}
+			return;
+		}
 
-		if (startProxy &&wang.type==2&& !success && wang.testProxyCount < maxProxyFail) {
+		
+		//执行代理模式
+		if (startProxy &&wang.type==2&& !success && wang.failProxyCount < maxProxyFail) {
 			success = doProxyUrl(url, fileNamePath);
 			if (!success) {
-				wang.testProxyCount++;
+				wang.failProxyCount++;
 			}
 		}
 		
@@ -162,6 +194,7 @@ public class DownloadAutoManager{
 		if(dto==null) {
 			dto=new Wang();
 			dto.type=type;
+			dto.webRoot=webRoot;
 			wang.put(webRoot, dto);
 		}
 		return dto;
@@ -175,12 +208,13 @@ public class DownloadAutoManager{
 	}
 	
 	class Wang {
+		String webRoot;
 		/**0-不访问，1=本地访问，2-代理访问*/
 		int type=1;
 		/**尝试本地url失败个数**/
-		int testLocalCount=0;
+		int failLocalCount=0;
 		/**尝试代理url失败个数**/
-		int testProxyCount=0;
+		int failProxyCount=0;
 		/**下载缓慢的次数**/
 		int slowCount=0;
 		/**下载快的次数**/
