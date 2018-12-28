@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -205,6 +206,24 @@ public class DownloadAutoManager{
 			return ((ThreadPoolExecutor)slowPool).getActiveCount();
 		}
 		return null;
+	}
+	
+	public static void waitDownload(){
+		if(instance!=null){
+			ThreadPoolExecutor pool=(ThreadPoolExecutor)slowPool;
+			while(true) {
+				//关闭后所有任务都已完成,则返回true
+				if(pool.isTerminated()) {
+					break;
+				}
+				try {
+					TimeUnit.SECONDS.sleep(5);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			pool.shutdown();
+		}
 	}
 	
 	class Wang {

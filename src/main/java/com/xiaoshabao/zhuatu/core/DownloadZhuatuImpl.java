@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -17,6 +16,7 @@ import com.xiaoshabao.zhuatu.core.config.ZhuatuConfig;
 import com.xiaoshabao.zhuatu.core.log.LogManager;
 import com.xiaoshabao.zhuatu.core.pool.DownloadTuTask;
 import com.xiaoshabao.zhuatu.core.pool.ZhuatuDownloadPool;
+import com.xiaoshabao.zhuatu.http.DownloadAutoManager;
 
 public class DownloadZhuatuImpl extends Decorator {
 	private final static Logger log = LoggerFactory.getLogger(DownloadZhuatuImpl.class);
@@ -202,19 +202,8 @@ public class DownloadZhuatuImpl extends Decorator {
 	@Override
 	public void afterRuning() {
 		super.afterRuning();
-		ZhuatuDownloadPool.getInstance().shutdown();
-		
-		while(true) {
-			//关闭后所有任务都已完成,则返回true
-			if(ZhuatuDownloadPool.getInstance().isTerminated()) {
-				break;
-			}
-			try {
-				TimeUnit.SECONDS.sleep(5);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		ZhuatuDownloadPool.getInstance().waitDownload();
+		DownloadAutoManager.waitDownload();
 	}
 
 	

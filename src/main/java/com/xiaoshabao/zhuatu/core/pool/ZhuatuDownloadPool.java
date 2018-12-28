@@ -60,4 +60,19 @@ public class ZhuatuDownloadPool extends ThreadPoolExecutor {
 			}
 		}
 	}
+	
+	public synchronized void waitDownload() {
+		while(true) {
+			//关闭后所有任务都已完成,则返回true
+			if(this.isTerminated()) {
+				break;
+			}
+			try {
+				TimeUnit.SECONDS.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		this.shutdown();
+	}
 }
