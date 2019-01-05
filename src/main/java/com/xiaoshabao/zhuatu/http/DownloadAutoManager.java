@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class DownloadAutoManager{
 
 	private Map<String,Wang> wang=new ConcurrentHashMap<String, Wang>();
 	
-	private Map<String,List<String>> conUrl=Collections.synchronizedMap(new HashMap<String,List<String>>());
+	private static Map<String,List<String>> conUrl=new HashMap<String,List<String>>();
 	
 	private Boolean startProxy;
 	private String ip;
@@ -93,7 +92,6 @@ public class DownloadAutoManager{
 		if (wang.type==1&&wang.failLocalCount < maxLocalFail) {
 			try {
 				success = doUrl(url, fileNamePath, config.getDwonloadType());
-				throw new ConnectException("11");
 			} catch (ConnectException e) {
 				proxyFlag=startProxy;
 			}
@@ -104,30 +102,40 @@ public class DownloadAutoManager{
 		
 		//判断是否使用代理模式
 		if(proxyFlag) {
-			List<String> noUrl=conUrl.get(wang.webRoot);
-			if(noUrl==null) {
-				noUrl=new ArrayList<String>(tryProxyCount);
-				conUrl.put(wang.webRoot, noUrl);
-			}
-			noUrl.add(url);
 			
-			if(noUrl.size()>tryProxyCount-1) {
-				wang.type=2;
-				log.info("切换代理尝试：{}",wang.webRoot);
-				for(String u:noUrl) {
-					if (!doProxyUrl(u, fileNamePath)) {
-						wang.failProxyCount++;
+			synchronized (conUrl) {
+				if(wang.type!=2){
+					List<String> noUrl=conUrl.get(wang.webRoot);
+					if(noUrl==null) {
+						noUrl=new ArrayList<String>(tryProxyCount);
+						conUrl.put(wang.webRoot, noUrl);
 					}
+					noUrl.add(url);
+					
+					if(noUrl.size()>tryProxyCount-1) {
+						wang.type=2;
+						log.info("切换代理尝试：{}",wang.webRoot);
+						for(String u:noUrl) {
+							if (!doProxyUrl(u, fileNamePath)) {
+								wang.failProxyCount++;
+							}
+						}
+						conUrl.remove(wang.webRoot);
+					}
+					return;
 				}
-				conUrl.remove(wang.webRoot);
 			}
-			return;
 		}
 
 		
 		//执行代理模式
 		if (startProxy &&wang.type==2&& !success && wang.failProxyCount < maxProxyFail) {
-			success = doProxyUrl(url, fileNamePath);
+			try {
+				success = doProxyUrl(url, fileNamePath);
+			} catch (ConnectException e) {
+				log.error("此项目无法访问{}",url);
+				wang.type=0;
+			}
 			if (!success) {
 				wang.failProxyCount++;
 			}
