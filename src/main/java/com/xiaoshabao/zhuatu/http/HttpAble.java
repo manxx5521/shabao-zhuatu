@@ -154,9 +154,10 @@ public interface HttpAble {
 	 * @return 下载成功true
 	 */
 	default boolean download(String url, String pathName, int count,boolean tryProxy) {
-		return new DownloadRetry<String, Boolean>(url, "下载文件" + url)
+		Boolean success= new DownloadRetry<String, Boolean>(url, "下载文件" + url)
 				.setCount(count)
 				.setTryProxy(tryProxy).execute(t -> download(t, pathName));
+		return success==null?false:success;
 	}
 	
 	/**

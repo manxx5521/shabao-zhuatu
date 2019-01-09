@@ -61,18 +61,6 @@ public class DownloadRetry<T, R> {
 		// 记录最后一次失败异常
 		Exception laste = null;
 		do {
-			if (i > count) {
-				if(laste!=null) {
-					log.error("{}执行失败,出现异常。", this.detailMsg, laste);
-					if(tryProxy&&laste instanceof SocketException||laste instanceof SocketTimeoutException){
-						throw new ConnectException(laste);
-					}
-					
-				}else {
-					log.error("{}执行失败,原因：函数中返回结果为null", this.detailMsg);
-				}
-				return null;
-			}
 			try {
 				result = function.apply(t);
 				if (result instanceof Boolean && (Boolean) result) {
@@ -95,6 +83,18 @@ public class DownloadRetry<T, R> {
 						count = 2;
 					}
 				}
+			}
+			if (i >= count) {
+				if(laste!=null) {
+					log.error("{}执行失败,出现异常。", this.detailMsg, laste);
+					if(tryProxy&&laste instanceof SocketException||laste instanceof SocketTimeoutException){
+						throw new ConnectException(laste);
+					}
+					
+				}else {
+					log.error("{}执行失败,原因：函数中返回结果为null", this.detailMsg);
+				}
+				return null;
 			}
 			try {
 				Thread.sleep(sleepTime);
