@@ -77,7 +77,7 @@ public class Service {
 	 * @return
 	 */
 	public Service downloadUrl() {
-		this.downloadUrl = Boolean.TRUE;
+		this.downloadUrl = true;
 		return this;
 	}
 	
@@ -125,7 +125,7 @@ public class Service {
 	 * @param waitProject
 	 */
 	public Service waitProject() {
-		this.waitProject = Boolean.TRUE;
+		this.waitProject = true;
 		return this;
 	}
 

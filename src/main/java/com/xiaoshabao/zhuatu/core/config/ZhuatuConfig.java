@@ -59,6 +59,22 @@ public class ZhuatuConfig {
 	public Service createService() {
 		return center.createService();
 	}
+	/**
+	 * 创建项目层
+	 * <p>此层返回结果，处理时会进行等待，防止过度抓取</p>
+	 * @return
+	 */
+	public Service createPorjectService() {
+		return center.createService().waitProject();
+	}
+	/**
+	 * 创建下载层
+	 * <p>此层返回结果，会对url进行下载处理</p>
+	 * @return
+	 */
+	public Service createDownloadService() {
+		return center.createService().downloadUrl();
+	}
 
 	/**
 	 * 设置编码格式
