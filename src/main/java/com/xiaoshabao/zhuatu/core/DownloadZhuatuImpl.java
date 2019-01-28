@@ -202,7 +202,7 @@ public class DownloadZhuatuImpl extends Decorator {
 	@Override
 	public void afterRuning() {
 		super.afterRuning();
-		ZhuatuDownloadPool.getInstance().waitDownload();
+		ZhuatuDownloadPool.waitDownload();
 		DownloadAutoManager.waitDownload();
 	}
 

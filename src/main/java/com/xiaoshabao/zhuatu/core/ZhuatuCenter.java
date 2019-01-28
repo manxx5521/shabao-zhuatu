@@ -74,7 +74,7 @@ public class ZhuatuCenter{
 					config.getThreadCount());
 			for (int i = 0; i < config.getThreadCount(); i++) {
 				CompletableFuture.runAsync(() -> {
-					parserPage(serviceList.get(0),info, 0, true);
+//					parserPage(serviceList.get(0),info, 0, true);
 					latch.countDown();
 				});
 			}

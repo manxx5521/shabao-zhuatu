@@ -219,6 +219,8 @@ public class DownloadAutoManager{
 	public static void waitDownload(){
 		if(instance!=null){
 			ThreadPoolExecutor pool=(ThreadPoolExecutor)slowPool;
+			pool.shutdown();
+			
 			while(true) {
 				//关闭后所有任务都已完成,则返回true
 				if(pool.isTerminated()) {
@@ -230,7 +232,7 @@ public class DownloadAutoManager{
 					e.printStackTrace();
 				}
 			}
-			pool.shutdown();
+			
 		}
 	}
 	
